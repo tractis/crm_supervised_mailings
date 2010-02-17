@@ -1,3 +1,9 @@
 Supervised Mailings plugin for Fat Free CRM
 
+Installation Instructions:
+
+  $ ruby script/plugin installgit://github.com/tractis/crm_supervised_mailings.git
+  $ ruby script/generate crm_supervised_mailings_migration
+  $ rake db:migrate
+
 Copyright (c) 2010 by Tractis (https://www.tractis.com), released under the MIT License
