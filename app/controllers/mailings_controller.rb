@@ -130,6 +130,19 @@ class MailingsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:html, :js, :xml)
   end 
+
+  # GET /mailings/ASSET/addmails
+  # GET /mailings.xml                                                   HTML
+  #----------------------------------------------------------------------------
+  def addmails
+    @search = params[:id]
+
+    respond_to do |format|
+      format.html # index.html.haml
+      format.js   # index.js.rjs
+      format.xml  { render :xml => @search }
+    end
+  end
   
   private
   #----------------------------------------------------------------------------

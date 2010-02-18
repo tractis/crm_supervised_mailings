@@ -1,8 +1,4 @@
-#require "crm_cats/models"   
-#require "crm_cats/controller_actions"
-#require "crm_cats/view_helpers"
-#require "crm_cats/controller_hooks"
-#require "crm_cats/view_hooks"
+require "crm_supervised_mailings/view_hooks"
 
 require "dispatcher"
 
