@@ -4,19 +4,14 @@
   -#.strip{:class => completed.category}= t(completed.category)
   
   .tools{ invisible, :id => dom_id(mail, :tools) }
-    = "edit" + " | "
-    = "delete!" + "&nbsp;"
-    -#= link_to_edit(mail) + " | "
-    -#= link_to_delete(mail) + "&nbsp;"
+    = link_to_mail_edit(mail) << " | "
+    = link_to_mail_confirm(mail)
         
   .indent
     -#= link_to(h(contact.full_name(@current_user.preference[:contacts_naming])), contact)
     = "¡Needs Update!" if mail.needs_update == true
-    = mail.subject
+    = get_asset_link(mail.mailable)
     %tt
-      - if mail.mailable.email.empty?
-        = "¡Warning, no email available, please update the #{mail.mailable_type}!"
-      - else
-        = mail.mailable.email
+      = truncate(mail.subject, :length => 82)
     %dt{ :style => "padding: 2px 0px 0px 0px" }
       = t(:added_ago, time_ago_in_words(mail.created_at))

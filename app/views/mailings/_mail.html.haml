@@ -22,3 +22,15 @@
         %td{ :valign => :top, :colspan => 3 }
           .label #{t :signature}:
           = f.text_area :signature, :style =>"width:480px", :rows => 4
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label.top.req #{t :general_placeholders}:
+          [[name]], [[email]], [[phone]], [[fax]]
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label.top.req #{t :contact_leads_placeholders}:
+          [[first_name]], [[last_name]], [[title]], [[department]], [[mobile]]. [[blog]]   
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label.top.req #{t :accounts_placeholders}:
+          [[website]]

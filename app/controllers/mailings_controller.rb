@@ -137,4 +137,20 @@ class MailingsController < ApplicationController
     Mailing.find(:all)
   end
   
+  #----------------------------------------------------------------------------
+  def respond_to_destroy(method)
+    if method == :ajax
+      @mailings = get_mailings
+      if @mailings.blank?
+        @mailings = get_mailings(:page => current_page - 1) if current_page > 1
+        render :action => :index and return
+      end
+      # At this point render default destroy.js.rjs template.
+    else # :html request
+      self.current_page = 1 # Reset current page to 1 to make sure it stays valid.
+      flash[:notice] = "#{t(:asset_deleted, @mailing.name)}"
+      redirect_to(mailings_path)
+    end
+  end
+  
 end

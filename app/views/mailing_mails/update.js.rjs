@@ -1,0 +1,11 @@
+id = dom_id(@mailing_mail)
+
+if @mailing_mail.errors.empty?
+    page[id].replace :partial => "mail", :collection => [ @mailing_mail ]
+    page[id].visual_effect :highlight, :duration => 1.0
+    page << refresh_sidebar(:index)
+else  
+  page[id].replace_html :partial => "edit"
+  page[id].visual_effect :shake, :duration => 0.25, :distance => 6
+  page[:mailing_mail_subject].focus
+end

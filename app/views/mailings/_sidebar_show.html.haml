@@ -1,4 +1,11 @@
 .panel#summary
+  .caption #{t :mailing_summary}
+  %li
+    %dt#mailing_status= t(@mailing.status)
+    %tt #{t :status}:
+    
   - if @mailing.background_info && !@mailing.background_info.empty?
+    %br
     %b #{t :background_info}
-    %div= auto_link(simple_format h(@mailing.background_info))
+    %div= auto_link(simple_format h(@mailing.background_info)) 
+

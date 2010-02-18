@@ -1,0 +1,5 @@
+.confirm[@mailing_mail, :confirm]
+  #{t :mailing_mail_confirm_delete}
+  #{t :delete} <b>#{@mailing_mail.mailable.name}</b> #{@mailing_mail.mailable.class.to_s}?&nbsp;
+  = link_to_mail_delete(@mailing_mail) << " : "
+  = link_to_function(t(:no_button), "crm.flick('#{dom_id(@mailing_mail, :confirm)}', 'remove')")
