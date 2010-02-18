@@ -1,0 +1,9 @@
+en-US:
+  language: English
+
+  # crm_supervised_mailings plugin internalization.
+  #----------------------------------------------------------------------------
+  mailing_title: Mailings
+  mailing_small: Mailing
+  mailings_small: mailings
+  create_mailing: Create mailing

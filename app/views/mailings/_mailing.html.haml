@@ -1,0 +1,16 @@
+%li[mailing]{ highlightable(dom_id(mailing, :tools)) }
+
+  .strip.active #{t(mailing.status)}
+  -#.strip{:class => completed.category}= t(completed.category)
+
+  .indentfull
+    .tools{ invisible, :id => dom_id(mailing, :tools) }
+      = link_to_edit(mailing) << " | "
+      = link_to_confirm(mailing)
+      
+    = link_to(h(mailing.name), mailing) << " &ndash; "
+    %tt
+      = h(mailing.background_info) unless mailing.background_info.blank?
+      
+    %dt{ :style => "padding: 2px 0px 0px 0px" }
+      = t(:added_by, :time_ago => time_ago_in_words(mailing.created_at), :user => (mailing.user.id == @current_user.id ? t(:me) : h(mailing.user.full_name)))

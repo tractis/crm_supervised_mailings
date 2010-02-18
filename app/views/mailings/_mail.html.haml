@@ -1,0 +1,24 @@
+- edit ||= false
+- collapsed = session[:mailing_mail].nil?
+= subtitle :mailing_mail, collapsed, t(:mail_info)
+.section
+  %small#mailing_mail_intro{ hidden_if(!collapsed) }
+    = t(:intro, t(:mail_info_small)) unless edit
+  #mailing_mail{ hidden_if(collapsed) }
+    %table{ :width => 500, :cellpadding => 0, :cellspacing => 0 }
+      %tr
+        %td{ :valign => :top }
+          .label #{t :email_from}:
+          = f.text_field :email_from, :style => "width:240px"
+        %td= spacer
+        %td{ :valign => :top }
+          .label #{t :subject}:
+          = f.text_field :subject, :style => "width:240px"
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label #{t :body}:
+          = f.text_area :body, :style =>"width:480px", :rows => 8
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label #{t :signature}:
+          = f.text_area :signature, :style =>"width:480px", :rows => 4

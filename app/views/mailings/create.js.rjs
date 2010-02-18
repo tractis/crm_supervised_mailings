@@ -1,0 +1,11 @@
+if @mailing.valid?
+  page[:create_mailing_arrow].replace_html "&#9658;"
+  page[:create_mailing_title].replace_html t(:mailing_title)
+  page.visual_effect :toggle_blind, :create_mailing, :duration => 0.3, :afterFinish => 'function(effect) {effect.element.update("")}'
+  page.insert_html :top, :mailings, :partial => "mailing", :collection => [ @mailing ]
+  page[dom_id(@mailing)].visual_effect :highlight, :duration => 1.5
+else
+  page[:create_mailing].replace_html :partial => "create"
+  page[:create_mailing].visual_effect :shake, :duration => 0.25, :distance => 6
+  page[:mailing_name].focus
+end

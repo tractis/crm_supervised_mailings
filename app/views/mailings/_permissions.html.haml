@@ -1,0 +1,24 @@
+- edit ||= false
+- collapsed = session[:mailing_permissions].nil?
+= subtitle :mailing_permissions, collapsed, t(:permissions)
+.section
+  %small#mailing_permissions_intro{ hidden_if(!collapsed) }
+    = get_default_permissions_intro(@mailing.access, t(:mailing_small)) unless edit
+  #mailing_permissions{ hidden_if(collapsed) }
+    .radio_box
+      = f.radio_button :access, "Private", :onclick => "$('people').hide()"
+      = label "mailing[access]", :private, t(:keep_private), :style => "cursor:pointer"
+    .radio_box
+      = f.radio_button :access, "Public", :onclick => "$('people').hide()"
+      = label "mailing[access]", :public, t(:make_public), :style => "cursor:pointer"
+    .radio_box
+      = f.radio_button :access, "Shared", :onclick => "$('people').show()"
+      = label "mailing[access]", :shared, t(:share_with), :style => "cursor:pointer"
+
+    #people{ hidden_if(@mailing.access != "Shared") }
+      %div{ :style => "padding: 6px 0px 0px 20px" }
+        - for user in @users
+          .check_box
+            -# Preserve state of the checkboxes if the form gets redrawn on errors.
+            = check_box_tag "users[]", user.id, @mailing.permissions.map(&:user_id).include?(user.id) || (params[:users] && params[:users].include?(user.id.to_s)), :id => "user_#{user.id}"
+            = label_tag "user_#{user.id}", h(user.full_name), :style => "cursor:pointer"

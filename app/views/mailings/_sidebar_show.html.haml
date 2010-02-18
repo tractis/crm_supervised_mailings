@@ -1,0 +1,4 @@
+.panel#summary
+  - if @mailing.background_info && !@mailing.background_info.empty?
+    %b #{t :background_info}
+    %div= auto_link(simple_format h(@mailing.background_info))

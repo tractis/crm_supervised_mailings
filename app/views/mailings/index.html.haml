@@ -1,0 +1,14 @@
+= styles_for :mailing
+
+.title_tools
+  = link_to_inline(:create_mailing, new_mailing_path, :text => t(:create_mailing))
+
+.title
+  %span#create_mailing_title #{t(:mailing_title)}
+.remote#create_mailing{ hidden }
+
+.list#mailings
+  - if @mailings.blank?
+    = render :partial => "common/empty"
+  - else
+    = render :partial => "mailing", :collection => @mailings

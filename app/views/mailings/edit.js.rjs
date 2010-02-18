@@ -1,0 +1,33 @@
+id = dom_id(@mailing)
+
+if params[:cancel].true? # <--------------------- Hide [Edit mailing]
+
+  if called_from_landing_page?
+    page.call "crm.flip_form", :edit_mailing
+    page.call "crm.set_title", :edit_mailing, @mailing.name
+  else                                            # Called from mailings list item...
+    page[id].replace :partial => "mailing", :collection => [ @mailing ]
+  end
+
+else # <----------------------------------------  Show [Edit mailing] form.
+
+  if params[:cancel].blank?                       # Called from mailings list item...
+    if @previous                                  # Hide open [Edit mailing] form if any.
+      if @previous.is_a?(Mailing)
+        page[dom_id(@previous)].replace :partial => "mailing", :collection => [ @previous ]
+      else
+        page.call "crm.flick", "mailing_#{@previous}", :remove
+      end
+    end
+    page.call "crm.highlight_off", id             # Disable onMouseOver for the list item.
+    page.call "crm.hide_form", :create_mailing    # Hide [Create mailing] form if any.
+    page[id].replace_html :partial => "edit"      # Show [Edit mailing] form.
+
+  elsif params[:cancel].false?                    # Called from title of the mailing landing page...
+    page[:edit_mailing].replace_html :partial => "edit"
+    page.call "crm.flip_form", :edit_mailing
+    page.call "crm.set_title", :edit_mailing, "#{t :edit} #{@mailing.name}"
+  end
+  page[:mailing_name].focus
+
+end
