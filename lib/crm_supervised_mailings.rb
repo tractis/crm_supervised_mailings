@@ -1,4 +1,6 @@
-require "crm_supervised_mailings/view_hooks"
+require "crm_supervised_mailings/crm_supervised_mailings_view_helpers"
+require "crm_supervised_mailings/crm_supervised_mailings_view_hooks"
+require "crm_supervised_mailings/crm_supervised_mailings_controller_actions"
 
 require "dispatcher"
 

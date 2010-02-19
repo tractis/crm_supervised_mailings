@@ -9,15 +9,14 @@ class Mailing < ActiveRecord::Base
   sortable :by => [ "name ASC", "created_at DESC", "updated_at DESC" ], :default => "created_at DESC"  
 
   validates_presence_of :name
-  validates_presence_of :email_from
-  validates_presence_of :subject
-  validates_presence_of :body
   validates_uniqueness_of :name
   validate :users_for_shared_access
   
   def self.statuses
-    ["ongoing", "rejected", "finished"]
+    ["open", "finished"]
   end
+  
+  named_scope :open, :conditions => "status='open'"
 
   private
   # Make sure at least one user has been selected if the account is being shared.

@@ -39,11 +39,6 @@ class MailingsController < ApplicationController
     @mailing = Mailing.new(:user => @current_user, :access => Setting.default_access)
     @users = User.except(@current_user).all
     
-    if params[:related]
-      model, id = params[:related].split("_")
-      instance_variable_set("@#{model}", model.classify.constantize.find(id))
-    end
-    
     respond_to do |format|
       format.js   # new.js.rjs
       format.xml  { render :xml => @mailing }
@@ -71,9 +66,14 @@ class MailingsController < ApplicationController
   def create   
     @mailing = Mailing.new(params[:mailing])
     @users = User.except(@current_user).all
-
+    
     respond_to do |format|
       if @mailing.save_with_permissions(params[:users])
+        if params[:mailing_related_source]
+          model = params[:mailing_related_source].singularize.camelize
+          query = session[:"#{params[:mailing_related_source]}_current_query"]
+          insert_mails(@mailing, model, query) 
+        end       
         @mailings = get_mailings
         format.js   # create.js.rjs
         format.xml  { render :xml => @mailing, :status => :created, :location => @mailing }
@@ -130,24 +130,11 @@ class MailingsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:html, :js, :xml)
   end 
-
-  # GET /mailings/ASSET/addmails
-  # GET /mailings.xml                                                   HTML
-  #----------------------------------------------------------------------------
-  def addmails
-    @search = params[:id]
-
-    respond_to do |format|
-      format.html # index.html.haml
-      format.js   # index.js.rjs
-      format.xml  { render :xml => @search }
-    end
-  end
   
   private
   #----------------------------------------------------------------------------
   def get_mailings
-    Mailing.find(:all)
+    Mailing.my(@current_user).find(:all)
   end
   
   #----------------------------------------------------------------------------
@@ -165,5 +152,5 @@ class MailingsController < ApplicationController
       redirect_to(mailings_path)
     end
   end
-  
+ 
 end

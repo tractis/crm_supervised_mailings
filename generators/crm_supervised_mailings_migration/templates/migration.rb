@@ -2,7 +2,7 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
   def self.up
     create_table :mailings do |t|
       t.string     :name
-      t.string     :status, :default => "ongoing"
+      t.string     :status, :default => "open"
       t.text       :background_info
       t.string     :email_from
       t.string     :subject

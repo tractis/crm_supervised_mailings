@@ -7,3 +7,7 @@ es-ES:
   mailing_small: Mailing
   mailings_small: mailings
   create_mailing: Crear Mailing
+  mailings: Mailings
+  add_mailing_mails: Añadir los {{value}} listados
+  add_mails_from: Añadir emails desde {{value}}
+  add_mails_criteria: con el criterio de búsqueda {{value}}
