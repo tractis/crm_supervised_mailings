@@ -23,8 +23,6 @@ class MailingsController < ApplicationController
     #@mailing = Mailing.find(params[:id])
     @mailing = Mailing.my(@current_user).find(params[:id])
     @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
-   
-    @comment = Comment.new
 
     respond_to do |format|
       format.html # show.html.haml

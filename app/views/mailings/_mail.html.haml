@@ -17,11 +17,11 @@
       %tr
         %td{ :valign => :top, :colspan => 3 }
           .label #{t :body}:
-          = f.text_area :body, :style =>"width:480px", :rows => 8
+          = f.text_area :body, :style =>"width:480px", :rows => 12
       %tr
         %td{ :valign => :top, :colspan => 3 }
-          .label #{t :signature}:
-          = f.text_area :signature, :style =>"width:480px", :rows => 4
+          .label #{t :sent_folder}:
+          = f.text_field :sent_folder, :style => "width:240px"          
       %tr
         %td{ :valign => :top, :colspan => 3 }
           .label.top.req #{t :general_placeholders}:

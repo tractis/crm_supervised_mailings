@@ -14,6 +14,3 @@ Dispatcher.to_prepare do
   ActivityObserver.instance.send :add_observer!, Mailing
 
 end
-
-# Make the mailings commentable.
-CommentsController::COMMENTABLE = CommentsController::COMMENTABLE + %w(mailing_id)

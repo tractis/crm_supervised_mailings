@@ -11,3 +11,5 @@ es-ES:
   add_mailing_mails: Añadir los {{value}} listados
   add_mails_from: Añadir emails desde {{value}}
   add_mails_criteria: con el criterio de búsqueda {{value}}
+  start_mailing: Comenzar mailing
+  mailing_mails: Lista de emails

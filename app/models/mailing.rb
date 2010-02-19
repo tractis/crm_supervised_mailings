@@ -4,7 +4,6 @@ class Mailing < ActiveRecord::Base
   
   simple_column_search :name, :match => :middle, :escape => lambda { |query| query.gsub(/[^\w\s\-\.']/, "").strip }
   uses_user_permissions
-  acts_as_commentable
   acts_as_paranoid
   sortable :by => [ "name ASC", "created_at DESC", "updated_at DESC" ], :default => "created_at DESC"  
 

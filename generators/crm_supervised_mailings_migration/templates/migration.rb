@@ -7,7 +7,7 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
       t.string     :email_from
       t.string     :subject
       t.text       :body
-      t.text       :signature
+      t.string     :sent_folder
       t.references :user
       t.integer    :assigned_to
       t.string     :access, :limit => 8, :default => "Private"
@@ -20,8 +20,7 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
       t.integer    :mailing_id
       t.string     :status, :default => "new"
       t.string     :subject
-      t.text       :body
-      t.text       :signature 
+      t.text       :body 
       t.references :user
       t.boolean    :needs_update, :null => false, :default => false
       

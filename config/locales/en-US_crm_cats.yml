@@ -11,3 +11,5 @@ en-US:
   add_mailing_mails: Add the {{value}} listed
   add_mails_from: Add emails from {{value}}
   add_mails_criteria: with {{value}} search criteria
+  start_mailing: Start mailing
+  mailing_mails: mails list

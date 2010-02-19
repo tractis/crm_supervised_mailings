@@ -6,12 +6,9 @@
 
 %div#edit_mailing{ hidden }
 
-= render :partial => "comments/new", :locals => { :commentable => @mailing }
-= render :partial => "comments/comment", :collection => @mailing.comments
-
 -#-----------------------------------------------------------------------------
 %br
-= inline :create_mailing, new_mailing_path, { :class => "subtitle_tools", :related => dom_id(@mailing), :text=> t(:create_mailing_mail) }
+= inline :create_mailing, new_mailing_path, { :class => "subtitle_tools", :related => dom_id(@mailing), :text=> t(:start_mailing) }
 .subtitle#create_mailing_mail_title #{t :mailing_mails}
 .remote#create_mailing_mail{ hidden }
 .log#mailing_mails
