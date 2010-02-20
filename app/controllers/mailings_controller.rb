@@ -20,9 +20,9 @@ class MailingsController < ApplicationController
   # GET /mailings/1.xml
   #----------------------------------------------------------------------------
   def show
-    #@mailing = Mailing.find(params[:id])
     @mailing = Mailing.my(@current_user).find(params[:id])
     @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
+    @users = User.except(@current_user).all
 
     respond_to do |format|
       format.html # show.html.haml
@@ -90,6 +90,9 @@ class MailingsController < ApplicationController
 
     respond_to do |format|
       if @mailing.update_with_permissions(params[:mailing], params[:users])
+
+        check_mails
+        
         format.js   # update.js.rjs
         format.xml  { head :ok }
       else
@@ -98,6 +101,18 @@ class MailingsController < ApplicationController
         format.xml  { render :xml => @mailing.errors, :status => :unprocessable_entity }
       end
     end
+
+  rescue ActiveRecord::RecordNotFound
+    respond_to_not_found(:js, :xml)
+  end
+
+  # GET /mailings/1/check                                              HTML
+  #----------------------------------------------------------------------------
+  def check
+
+    @mailing = Mailing.my(@current_user).find(params[:id])
+    check_mails
+    redirect_to(@mailing)
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml)
@@ -128,6 +143,27 @@ class MailingsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:html, :js, :xml)
   end 
+
+  # GET /mailings/options                                                 AJAX
+  #----------------------------------------------------------------------------
+  def options
+    # We use here the mailing_mails settings (in mailing list is not used by now)
+    unless params[:cancel].true?
+      @per_page = @current_user.pref[:mailings_mails_per_page] || MailingMail.per_page
+      @sort_by  = @current_user.pref[:mailings_mails_sort_by]  || MailingMail.sort_by
+      @filter  = @current_user.pref[:mailings_mails_filter]  || MailingMail.filter
+    end
+  end
+
+  # POST /mailings/redraw                                                 AJAX
+  #----------------------------------------------------------------------------
+  def redraw
+    @current_user.pref[:mailings_mails_per_page] = params[:per_page] if params[:per_page]
+    @current_user.pref[:mailings_mails_sort_by]  = MailingMail::sort_by_map[params[:sort_by]] if params[:sort_by]
+    @mailing = Mailing.find(params[:id])
+    
+    render :action => :index
+  end
   
   private
   #----------------------------------------------------------------------------
@@ -150,5 +186,42 @@ class MailingsController < ApplicationController
       redirect_to(mailings_path)
     end
   end
- 
+
+  def check_mails
+    
+    @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
+
+    @mailing_mails.each do |mail|
+      check_and_update_mail_anchors(mail)
+    end
+
+  end
+
+  #----------------------------------------------------------------------------
+  def check_and_update_mail_anchors(mail)
+    placeholders = Mailing.send("#{mail.mailable.class.to_s.downcase.pluralize}_placeholders") + Mailing.general_placeholders
+
+    # Detects placeholders on subject and body to check against the mail asset
+    missing_placeholders = ""
+
+    ["subject", "body"].each do |field|
+      placeholders.each do |ph|
+        if @mailing.send(field.to_sym).include? Mailing.show_ph(ph)
+          missing_placeholders += "#{field}-#{ph}\n" if mail.mailable.send(ph.to_sym).empty?
+        end
+      end
+    end
+
+    # Mark mails as need_update
+    if missing_placeholders.empty? && mail.needs_update == true
+      mail.needs_update = false
+      mail.needs_update_help = ""
+      mail.save      
+    elsif !missing_placeholders.empty?
+      mail.needs_update = true
+      mail.needs_update_help = missing_placeholders
+      mail.save
+    end
+  end
+
 end

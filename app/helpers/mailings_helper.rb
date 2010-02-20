@@ -36,6 +36,6 @@ module MailingsHelper
       :url => mailing_mail_path(mailing_mail),
       :before => visual_effect(:highlight, dom_id(mailing_mail), :startcolor => "#ffe4e1")
     )
-  end 
+  end
   
 end

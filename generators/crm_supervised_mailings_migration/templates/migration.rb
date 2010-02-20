@@ -23,6 +23,7 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
       t.text       :body 
       t.references :user
       t.boolean    :needs_update, :null => false, :default => false
+      t.string     :needs_update_help
       
       t.references :mailable, :polymorphic => true
 

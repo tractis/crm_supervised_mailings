@@ -1,7 +1,9 @@
 #confirm{ hidden }
 .title_tools#menu
+  = link_to(t(:check), check_mailing_path(@mailing)) + " | "
   = link_to_inline(:edit_mailing, edit_mailing_path(@mailing), :text => t(:edit)) + " | "
-  = link_to_function(t(:delete) + '?', confirm_delete(@mailing))
+  = link_to_function(t(:delete) + '?', confirm_delete(@mailing)) + " | "
+  = link_to_inline(:options, options_mailings_path, :text=> t(:options))
 .title#edit_mailing_title= h(@mailing.name)
 
 %div#edit_mailing{ hidden }
@@ -9,7 +11,15 @@
 -#-----------------------------------------------------------------------------
 %br
 = inline :create_mailing, new_mailing_path, { :class => "subtitle_tools", :related => dom_id(@mailing), :text=> t(:start_mailing) }
-.subtitle#create_mailing_mail_title #{t :mailing_mails}
+.subtitle#create_mailing_mail_title= t(:mailing_mails)
+.remote#options{ hidden }
 .remote#create_mailing_mail{ hidden }
 .log#mailing_mails
   = render :partial => "mailing_mails/mail", :collection => @mailing_mails
+
+- if params[:edit].true?
+  %script{:type =>  'text/javascript'}
+    = render :update do |page|
+      = page.replace_html :edit_mailing, :partial => "edit"
+      = page.call "crm.flip_form", :edit_mailing
+      = page.call "crm.set_title", :edit_mailing, "#{t :edit} #{@mailing.name}"

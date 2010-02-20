@@ -12,7 +12,7 @@ module CrmSupervisedMailings
     
     # Quick-fix for view_hooks translations not working (needs review of fcc code)
     #----------------------------------------------------------------------------
-    def get_supervised_mailins_translation(string)
+    def get_supervised_mailings_translation(string)
       t(string.to_sym)
     end
     

@@ -5,7 +5,7 @@ class CrmSupervisedMailingsViewHooks < FatFreeCRM::Callback::Base
   = render :file => "mailings/functions.js"
   
 %br
-%h4= get_supervised_mailins_translation('mailings')
+%h4= get_supervised_mailings_translation('mailings')
 
 .label
   %span#mailing_create_title
@@ -19,7 +19,7 @@ class CrmSupervisedMailingsViewHooks < FatFreeCRM::Callback::Base
 = text_field(:mailing, :name, :style => "width:150px; display:none;")
 :javascript
   crm.create_or_select_mailing(1);
-= submit_tag
+= submit_tag "add"
 EOS
 
   SM_JAVASCRIPT = <<EOS

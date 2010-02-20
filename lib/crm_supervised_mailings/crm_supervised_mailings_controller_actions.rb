@@ -8,6 +8,7 @@ module CrmSupervisedMailings
       unless params[:mailing][:id].nil?
         begin
           mailing = Mailing.find(params[:mailing][:id])
+          edit = false
         rescue
           flash[:error] = "#{t(:mailing_not_found)}"
           redirect_to :back and return
@@ -19,6 +20,7 @@ module CrmSupervisedMailings
         else
           begin
             mailing = Mailing.create(:name => params[:mailing][:name], :user => @current_user, :access => Setting.default_access)
+            edit = true
           rescue
             flash[:error] = "#{t(:mailing_error_creating)}"
             redirect_to :back and return   
@@ -30,8 +32,8 @@ module CrmSupervisedMailings
       items.each do |item|
         MailingMail.create(:mailing_id => mailing.id, :user_id => 1, :mailable => item)
       end 
-      
-      redirect_to mailing
+
+      redirect_to mailing_path(mailing, {:edit => edit})
     end
 
   end

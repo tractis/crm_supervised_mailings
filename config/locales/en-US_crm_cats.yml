@@ -8,8 +8,19 @@ en-US:
   mailings_small: mailings
   create_mailing: Create mailing
   mailings: Mailings
+  mails: mails
   add_mailing_mails: Add the {{value}} listed
   add_mails_from: Add emails from {{value}}
   add_mails_criteria: with {{value}} search criteria
   start_mailing: Start mailing
   mailing_mails: mails list
+  open: Open
+  finished: Finished
+  new: Pending
+  sent: Sent
+  mailing_from: from {{value}}
+  needs_update: Update Needed
+  check: Check
+  mailing_show_per_page: Show {{number}} {{models}} per page showing {{filter}} mails.
+  mailings_options: Show mails options
+  mailing_summary: Mailing summary

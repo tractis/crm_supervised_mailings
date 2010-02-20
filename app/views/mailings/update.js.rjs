@@ -2,9 +2,7 @@ id = called_from_landing_page? ? "edit_mailing" : dom_id(@mailing)
 
 if @mailing.errors.empty?
   if called_from_landing_page?
-    page.call "crm.flip_form", :edit_mailing
-    page.call "crm.set_title", :edit_mailing, @mailing.name
-    page << refresh_sidebar(:show, :summary)
+    page.redirect_to(@mailing)
   else
     page[id].replace :partial => "mailing", :collection => [ @mailing ]
     page[id].visual_effect :highlight, :duration => 1.0

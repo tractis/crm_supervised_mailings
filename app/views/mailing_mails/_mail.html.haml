@@ -1,15 +1,17 @@
 %li[mail]{ highlightable(dom_id(mail, :tools)) }
   
-  .strip.active #{t(mail.status)} <br /> #{t(mail.mailable_type)}
-  -#.strip{:class => completed.category}= t(completed.category)
+  - if mail.status == "new"
+    .strip{:style => "background:bisque;"} #{t(mail.status)} <br /> #{t(:mailing_from, t(mail.mailable_type))}
+  - else
+    .strip{:style => "background:palegreen;"} #{t(mail.status)} <br /> #{t(:mailing_from, t(mail.mailable_type))}
   
   .tools{ invisible, :id => dom_id(mail, :tools) }
     = link_to_mail_edit(mail) << " | "
     = link_to_mail_confirm(mail)
         
   .indent
-    -#= link_to(h(contact.full_name(@current_user.preference[:contacts_naming])), contact)
-    = "¡Needs Update!" if mail.needs_update == true
+    - if mail.needs_update == true
+      .strip{:style => "background:lightcoral;"} #{t(:needs_update)}: #{mail.needs_update_help}
     = get_asset_link(mail.mailable)
     %tt
       = truncate(mail.subject, :length => 82)

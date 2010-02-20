@@ -1,0 +1,10 @@
+- filter_menu_items = %w(new sent).inject([]) do |items, filter|
+  - items << options_menu_item(:filter, filter)
+
+:plain
+  new crm.Menu({
+    trigger   : "filter",
+    fade      : 0.5,
+    appear    : 0.5,
+    menu_items: [ #{filter_menu_items.join(",")} ]
+  });

@@ -1,7 +1,9 @@
 %li[mailing]{ highlightable(dom_id(mailing, :tools)) }
 
-  .strip.active #{t(mailing.status)}
-  -#.strip{:class => completed.category}= t(completed.category)
+  - if mailing.status == "open"
+    .strip{:style => "background:bisque;"} #{t(mailing.status)}
+  - else
+    .strip{:style => "background:palegreen;"} #{t(mailing.status)}
 
   .indentfull
     .tools{ invisible, :id => dom_id(mailing, :tools) }
