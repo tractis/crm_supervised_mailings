@@ -1,9 +1,10 @@
 page.call "crm.flick", :empty, :toggle
+page.call "crm.hide_form", :create_mailing
 page.call "crm.flip_form", :options
 
 if params[:cancel] != "true"
   page[:options].replace_html :partial => "options"
-  page.call "crm.set_title", :create_mailing_mail, t(:mailings_options)
+  page.call "crm.set_title", :create_mailing, t(:mailings_options)
 else
-  page.call "crm.set_title", :create_mailing_mail, t(:mailing_mails)
+  page.call "crm.set_title", :create_mailing, t(:mailings)
 end

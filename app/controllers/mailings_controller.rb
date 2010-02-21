@@ -2,13 +2,14 @@ class MailingsController < ApplicationController
   before_filter :require_user
   before_filter :set_current_tab
   before_filter :auto_complete, :only => :auto_complete
+  after_filter  :update_recently_viewed, :only => :show
 
   # GET /mailings
   # GET /mailings.xml                                                   HTML
   #----------------------------------------------------------------------------
   def index
-    @mailings = get_mailings
-    
+    @mailings = get_mailings(:page => params[:page])
+
     respond_to do |format|
       format.html # index.html.haml
       format.js   # index.js.rjs
@@ -21,7 +22,8 @@ class MailingsController < ApplicationController
   #----------------------------------------------------------------------------
   def show
     @mailing = Mailing.my(@current_user).find(params[:id])
-    @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
+    @mailing_mails = get_mailings_mails(:page => params[:page])
+    #@mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
     @users = User.except(@current_user).all
 
     respond_to do |format|
@@ -144,31 +146,96 @@ class MailingsController < ApplicationController
     respond_to_not_found(:html, :js, :xml)
   end 
 
+  # GET /mailings/search/query                                             AJAX
+  #----------------------------------------------------------------------------
+  def search
+    @mailings = get_mailings(:query => params[:query], :page => 1)
+
+    respond_to do |format|
+      format.js   { render :action => :index }
+      format.xml  { render :xml => @mailings.to_xml }
+    end
+  end
+
   # GET /mailings/options                                                 AJAX
   #----------------------------------------------------------------------------
   def options
     # We use here the mailing_mails settings (in mailing list is not used by now)
     unless params[:cancel].true?
-      @per_page = @current_user.pref[:mailings_mails_per_page] || MailingMail.per_page
-      @sort_by  = @current_user.pref[:mailings_mails_sort_by]  || MailingMail.sort_by
-      @filter  = @current_user.pref[:mailings_mails_filter]  || MailingMail.filter
+      @per_page = @current_user.pref[:mailings_per_page] || Mailing.per_page
+      @sort_by  = @current_user.pref[:mailings_sort_by]  || Mailing.sort_by
+      @filter   = @current_user.pref[:mailings_filter]   || Mailing.filter
     end
   end
 
   # POST /mailings/redraw                                                 AJAX
   #----------------------------------------------------------------------------
   def redraw
-    @current_user.pref[:mailings_mails_per_page] = params[:per_page] if params[:per_page]
-    @current_user.pref[:mailings_mails_sort_by]  = MailingMail::sort_by_map[params[:sort_by]] if params[:sort_by]
-    @mailing = Mailing.find(params[:id])
-    
+    @current_user.pref[:mailings_per_page] = params[:per_page] if params[:per_page]
+    @current_user.pref[:mailings_sort_by]  = Mailing::sort_by_map[params[:sort_by]] if params[:sort_by]
+    @current_user.pref[:mailings_filter]   = params[:filter] if params[:filter]
+    @mailings = get_mailings(:page => 1)
     render :action => :index
   end
   
   private
   #----------------------------------------------------------------------------
-  def get_mailings
-    Mailing.my(@current_user).find(:all)
+#  def get_mailings(options = { :page => nil, :query => nil })
+#    Mailing.my(@current_user).find(:all)
+#  end
+
+  #----------------------------------------------------------------------------
+  def get_mailings(options = { :page => nil, :query => nil })
+    self.current_page = options[:page] if options[:page]
+    self.current_query = options[:query] if options[:query]
+    current_filter = @current_user.pref[:mailings_filter] || Mailing.filter
+
+    records = {
+      :user => @current_user,
+      :order => @current_user.pref[:mailings_sort_by] || Mailing.sort_by
+    }
+    pages = {
+      :page => current_page,
+      :per_page => @current_user.pref[:mailings_per_page]
+    }
+
+    if current_query.blank?
+      if current_filter.empty? || current_filter == "all"  
+        p "vacío o all (#{current_filter})"
+        Mailing.my(records)
+      else
+        p "con filter válido (#{current_filter})"
+        Mailing.my(records).filter_by_status(current_filter)
+      end
+    else
+      if current_filter.empty? || current_filter == "all"  
+        Mailing.my(records).search(current_query)
+      else  
+        Mailing.my(records).search(current_query).filter_by_status(current_filter)
+      end
+    end.paginate(pages)
+
+  end
+
+
+  def get_mailings_mails(options = { :page => nil, :query => nil })
+    self.current_page = options[:page] if options[:page]
+    self.current_query = options[:query] if options[:query]
+
+    records = {
+      #:user => @current_user,
+      :order => @current_user.pref[:mailings_mails_sort_by] || MailingMail.sort_by,
+      :conditions => { :mailing_id => @mailing.id },
+      :include => :mailable
+    }
+    pages = {
+      :page => current_page,
+      :per_page => @current_user.pref[:mailings_mails_per_page]
+    }
+
+    MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable, :order => @current_user.pref[:mailings_mails_sort_by] || MailingMail.sort_by).paginate(pages)
+    #MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
+    
   end
   
   #----------------------------------------------------------------------------

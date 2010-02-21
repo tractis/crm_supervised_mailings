@@ -1,5 +1,5 @@
-unless @mailing.blank?
-  page[:mailings].replace_html render(:partial => "mailing", :collection => @mailing)
+unless @mailings.blank?
+  page[:mailings].replace_html render(:partial => "mailing", :collection => @mailings)
 else
   page[:mailings].replace_html render(:partial => "common/empty")
 end

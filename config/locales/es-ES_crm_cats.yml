@@ -21,6 +21,8 @@ es-ES:
   mailing_from: desde {{value}}
   needs_update: Faltan datos
   check: Comprobar
-  mailing_show_per_page: Mostrar {{number}} {{models}} por página mostrando los emails {{filter}}.
+  mailing_show_per_page: Mostrar {{number}} {{models}} por página mostrando {{filter}}.
   mailings_options: Opciones de visualización de emails
   mailing_summary: Resumen del mailing
+  option_open: Abiertos
+  option_finished: Finalizados  

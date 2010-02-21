@@ -2,15 +2,16 @@
   = link_to_close options_mailings_path
   = hidden_field_tag "mailing[user_id]", @current_user.id
 
-  - current_sort_by = t("option_" + MailingMail.sort_by_map.invert[@sort_by])
+  - current_sort_by = t("option_" + Mailing.sort_by_map.invert[@sort_by])
   - current_naming  = t("option_#{@naming}")
+  - current_filter  = t("option_#{@filter}")
 
   -# sort_by: Sort {{models}} by {{field}}.
-  = t(:sort_by, :models => t(:mails), :field => link_to(current_sort_by, "#", :id => :sort_by))
+  = t(:sort_by, :models => t(:mailings), :field => link_to(current_sort_by, "#", :id => :sort_by))
 
   -# show_per_page: Show {{number}} {{models}} per page using {{format}} format.
   -# Mostrar {{number}} {{models}} por página mostrando los emails {{filter}}.
-  = t(:mailing_show_per_page, :number => link_to(@per_page, "#", :id => :per_page), :models => t(:accounts_small), :filter => link_to(@filter, "#", :id => :filter))
+  = t(:mailing_show_per_page, :number => link_to(@per_page, "#", :id => :per_page), :models => t(:mailings), :filter => link_to(current_filter, "#", :id => :filter))
 %p
 
 %script

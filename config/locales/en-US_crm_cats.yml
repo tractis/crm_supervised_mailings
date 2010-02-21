@@ -21,6 +21,8 @@ en-US:
   mailing_from: from {{value}}
   needs_update: Update Needed
   check: Check
-  mailing_show_per_page: Show {{number}} {{models}} per page showing {{filter}} mails.
+  mailing_show_per_page: Show {{number}} {{models}} per page showing {{filter}}.
   mailings_options: Show mails options
   mailing_summary: Mailing summary
+  option_open: Opened
+  option_finished: Finished
