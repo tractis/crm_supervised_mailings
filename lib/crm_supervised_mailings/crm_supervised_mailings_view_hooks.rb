@@ -1,31 +1,58 @@
 class CrmSupervisedMailingsViewHooks < FatFreeCRM::Callback::Base
   
   ACTIONS_FOR_SHOW = <<EOS
-- content_for :javascript do
-  = render :file => "mailings/functions.js"
-  
 %br
 %h4= get_supervised_mailings_translation('mailings')
 
 .label
   %span#mailing_create_title
-    create_new or <a href='#' onclick='crm.select_mailing(1); return false;'>select_existing</a>:
+    = t(:create_new) << " " << t(:or) << " <a href='#' onclick='select_mailing(1); return false;'>" << t(:select_existing) << "</a>:"
   %span#mailing_select_title
-    <a href='#' onclick='crm.create_mailing(1); return false;'>create_new</a> or select_existing:
+    = "<a href='#' onclick='create_mailing(1); return false;'>" << t(:create_new) << "</a> " << t(:or) << " " << t(:select_existing) << ":"
   %span#mailing_disabled_title :
     
 = form_tag :action => "add_to_mailing"
-= collection_select :mailing, :id, Mailing.my(@current_user).open, :id, :name, { :style => "width:150px; display:none;" }
-= text_field(:mailing, :name, :style => "width:150px; display:none;")
+= collection_select :mailing, :id, Mailing.my(@current_user).open, :id, :name, {}, { :style => "width:170px; display:none;" }
+= text_field(:mailing, :name, :style => "width:170px; display:none;")
 :javascript
-  crm.create_or_select_mailing(1);
-= submit_tag "add"
+  // Hide mailing dropdown and show create new mailing edit field instead.
+  //----------------------------------------------------------------------------
+  create_mailing = function(and_focus) {
+    $("mailing_disabled_title").hide();
+    $("mailing_select_title").hide();
+    $("mailing_create_title").show();
+    $("mailing_id").hide();
+    $("mailing_id").disable();
+    $("mailing_name").enable();
+    $("mailing_name").clear();
+    $("mailing_name").show();
+    if (and_focus) {
+      $("mailing_name").focus();
+    }
+  }
+  
+  // Hide create mailing edit field and show mailings dropdown instead.
+  //----------------------------------------------------------------------------
+  select_mailing = function(and_focus) {
+    $("mailing_disabled_title").hide();
+    $("mailing_create_title").hide();
+    $("mailing_select_title").show();
+    $("mailing_name").hide();
+    $("mailing_name").disable();
+    $("mailing_id").enable();
+    $("mailing_id").show();
+    if (and_focus) {
+      $("mailing_id").focus();
+    }
+  }
+  create_mailing(1);
+= submit_tag t(:add)
 EOS
 
   SM_JAVASCRIPT = <<EOS
 // Hide mailing dropdown and show create new mailing edit field instead.
 //----------------------------------------------------------------------------
-crm.create_mailing = function(and_focus) {
+create_mailing = function(and_focus) {
   $("mailing_disabled_title").hide();
   $("mailing_select_title").hide();
   $("mailing_create_title").show();
@@ -41,7 +68,7 @@ crm.create_mailing = function(and_focus) {
 
 // Hide create mailing edit field and show mailings dropdown instead.
 //----------------------------------------------------------------------------
-crm.select_mailing = function(and_focus) {
+select_mailing = function(and_focus) {
   $("mailing_disabled_title").hide();
   $("mailing_create_title").hide();
   $("mailing_select_title").show();
@@ -56,10 +83,10 @@ crm.select_mailing = function(and_focus) {
 
 // Show mailings dropdown and disable it to prevent changing the mailing.
 //----------------------------------------------------------------------------
-crm.select_existing_mailing = function() {
+select_existing_mailing = function() {
   $("mailing_create_title").hide();
   $("mailing_select_title").hide();
-  $("mailingcrm_issues_disabled_title").show();
+  $("mailing_disabled_title").show();
   $("mailing_name").hide();
   $("mailing_name").disable();
   $("mailing_id").disable();
@@ -67,7 +94,7 @@ crm.select_existing_mailing = function() {
 }
 
 //----------------------------------------------------------------------------
-crm.create_or_select_mailing = function(selector) {
+create_or_select_mailing = function(selector) {
   if (selector !== true && selector > 0) {
     this.select_existing_mailing(); // disabled mailings dropdown
   } else if (selector) {
@@ -76,12 +103,14 @@ crm.create_or_select_mailing = function(selector) {
     this.select_mailing();          // mailings dropdown
   }
 }
+//----------------------------------------------------------------------------
+create_or_select_mailing(1);
 EOS
 
   #----------------------------------------------------------------------------
-  def javascript_epilogue(view, context = {})
-    SM_JAVASCRIPT
-  end
+#  def javascript_epilogue(view, context = {})
+#    SM_JAVASCRIPT
+#  end
 
   #----------------------------------------------------------------------------
   [ :account, :contact, :lead ].each do |model|
