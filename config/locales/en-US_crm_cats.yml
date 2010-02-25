@@ -41,3 +41,4 @@ en-US:
   mail_will_be_sent: Mail will be sent to {{to}} from {{from}}
   mail_not_be_sent: ¡Warning! This mail not will be sent until you complete the missing fields (to {{to}} from {{from}})
   profile_needs_update: Your email credentials are not set, please {{link}} your profile first
+  no_mails_to_send: No mails to send

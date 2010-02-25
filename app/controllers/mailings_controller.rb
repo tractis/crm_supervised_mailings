@@ -63,46 +63,22 @@ class MailingsController < ApplicationController
   #----------------------------------------------------------------------------
   def start
     @mailing = Mailing.my(@current_user).find(params[:id])
-    @users = User.except(@current_user).all
-    
-    if params[:previous] =~ /(\d+)\z/
-      @previous = Mailing.find($1)
+    @mailing_mails = get_mailings_mails(:page => params[:page], :filter => "new")
+
+    if @mailing_mails.blank?
+      flash[:notice] = t :no_mails_to_send
+      render :update do |page| 
+        page.redirect_to(@mailing)
+      end      
+    else
+      @mailing_mail = Mailing.check_and_update_mail_placeholders(@mailing_mails.first, @mailing, true)
+      @users = User.except(@current_user).all
+      render :template => "mailing_mails/edit.js.rjs"
     end
 
   rescue ActiveRecord::RecordNotFound
-    @previous ||= $1.to_i
     respond_to_not_found(:js) unless @mailing
-  end  
-
-  # GET /mailing_mails/1/edit                                                      AJAX
-  #----------------------------------------------------------------------------
-  def edit
-    @mail = MailingMail.find(params[:id])
-    @mailing = Mailing.find(@mail.mailing_id)
-    # Check and transform Transform data from source
-    @mailing_mail = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true) 
-    
-    @users = User.except(@current_user).all
-
-    if params[:previous] =~ /(\d+)\z/
-      @previous = MailingMail.find($1)
-    end
-  rescue ActiveRecord::RecordNotFound
-    @previous ||= $1.to_i
-    respond_to_not_found(:js) unless @mailing_mail
-  end  
-
-
-
-
-
-
-
-
-
-
-
-
+  end
 
   # POST /mailings
   # POST /mailings.xml                                                  AJAX
@@ -286,6 +262,7 @@ class MailingsController < ApplicationController
     self.current_query = options[:query] if options[:query]
     
     current_filter = @current_user.pref[:mailing_mails_filter] || MailingMail.filter
+    current_filter = options[:filter] if options[:filter]
     current_order = @current_user.pref[:mailing_mails_sort_by] || MailingMail.sort_by
 
     conditions = { :mailing_id => @mailing.id }

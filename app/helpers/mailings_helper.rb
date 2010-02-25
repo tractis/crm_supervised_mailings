@@ -63,5 +63,10 @@ module MailingsHelper
       :name        => status
     }
   end  
+
+  #----------------------------------------------------------------------------
+  def one_submit_only_and_next_mail(form)
+    { :onsubmit => "$('next_mail').value = crm.get_next_mail(); $('#{form}_submit').disabled = true;" }
+  end  
   
 end

@@ -41,3 +41,4 @@ es-ES:
   mail_will_be_sent: El email será enviado a {{to}} desde {{from}}
   mail_not_be_sent: ¡Aviso! El email no será enviado hasta que se completen los campos que faltan (a {{to}} desde {{from}})
   profile_needs_update: Tu cuenta de email no está configurada, por favor {{link}} tu perfil primero
+  no_mails_to_send: No se han encontrado emails para enviar

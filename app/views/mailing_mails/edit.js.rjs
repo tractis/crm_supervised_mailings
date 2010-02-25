@@ -15,12 +15,11 @@ else # <----------------------------------------  Show [Edit mailing_mail] form.
       end
     end
     page.call "crm.highlight_off", id             # Disable onMouseOver for the list item.
-    page[id].replace_html :partial => "edit"      # Show [Edit mailing_mail] form.
+    page[id].replace_html :partial => "mailing_mails/edit"      # Show [Edit mailing_mail] form.
 
   elsif params[:cancel].false?                    # Called from title of the mailing_mail landing page...
     page[:edit_mailing_mail].replace_html :partial => "edit"
     page.call "crm.flip_form", :edit_mailing_mail
-    #page.call "crm.set_title", :edit_mailing_mail, "#{t :edit} #{@mailing_mail.subject}"
   end
   
   unless @current_user.pref[:google_account].blank? || @current_user.pref[:google_password].blank?  

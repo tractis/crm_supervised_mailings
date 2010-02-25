@@ -15,8 +15,8 @@
 -#-----------------------------------------------------------------------------
 %br
 .title_tools#sub_menu
-  = inline :create_mailing, start_mailing_path(@mailing), { :class => "subtitle_tools", :related => dom_id(@mailing), :text=> t(:start_mailing) } unless @mailing_mails.blank?
-  = link_to_inline(:options, options_mails_mailings_path, { :text=> t(:options), :related => @mailing.id, :class => "subtitle_tools" }) + " | "
+  = link_to_remote(t(:start_mailing), :url => start_mailing_path(@mailing), :method => :get) unless @mailing_mails.blank?
+  = link_to_inline(:options, options_mails_mailings_path, { :text=> t(:options), :related => @mailing.id, :class => "subtitle_tools" })
 .subtitle#create_mailing_mail_title= t(:mailing_mails, t(@current_user.pref[:mailing_mails_filter] || MailingMail.filter))
 .remote#create_mailing_mail{ hidden }
 .remote#options{ hidden }
