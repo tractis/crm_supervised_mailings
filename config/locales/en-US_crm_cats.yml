@@ -18,12 +18,26 @@ en-US:
   finished: Finished
   new: Pending
   sent: Sent
-  mailing_from: from {{value}}
+  mailing_from_ready: "<b>{{models}}</b>: is ready to be sent."
+  mailing_from_needs_data: "<b>{{models}}</b>: needs the following fields filled {{information}}."
   needs_update: Update Needed
   check: Check
   mailing_show_per_page: Show {{number}} {{models}} per page showing {{filter}}.
-  mailings_options: Show mails options
+  mailing_mails_show_filter: Showing {{filter}}.
+  mailings_options: Visualization options
   mailing_summary: Mailing summary
   option_open: Opened
   option_finished: Finished
+  option_new: New
+  option_sent: Sent
+  option_needs_data: Missing data
+  option_ready: Ready for send
+  option_status: Status
   add: Add
+  mails_options: Options for mails list
+  how_to_add_emails: You can add mails from the accounts, contact and leads pages
+  send: Send
+  mailing_sent: "<b>{{models}}</b>: sent {{time_ago}} ago by {{user}}"
+  mail_will_be_sent: Mail will be sent to {{to}} from {{from}}
+  mail_not_be_sent: ¡Warning! This mail not will be sent until you complete the missing fields (to {{to}} from {{from}})
+  profile_needs_update: Your email credentials are not set, please {{link}} your profile first

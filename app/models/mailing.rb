@@ -40,11 +40,63 @@ class Mailing < ActiveRecord::Base
   end
 
   def self.show_ph(placeholder)
-    "[#{placeholder.to_s}]]"
+    "[[#{placeholder.to_s}]]"
   end
   
   named_scope :open, :conditions => "status='open'"
   named_scope :filter_by_status, lambda { |status| { :conditions => [ "status = ?", status ] } }
+  
+  #----------------------------------------------------------------------------
+  def self.check_and_update_mail_placeholders(mail, mailing, back = false)
+    # Generate the list of placeholders for the mail source, wihtout mail because this is checked manually and not depends on mailing text
+    placeholders = self.get_placeholders(mail)
+
+    # Detects placeholders on subject and body to check against the mail asset
+    missing_placeholders = ""
+
+    # Check email globally manually
+    missing_placeholders += "(email) " if mail.mailable.email.blank?
+    
+    if back == true
+      subject = mailing.subject
+      body = mailing.body
+    end
+    
+    ["subject", "body"].each do |field|
+      placeholders.each do |ph|
+        if mailing.send(field.to_sym).include? Mailing.show_ph(ph)
+          missing_placeholders += "(#{field}-#{ph}) " if mail.mailable.send(ph.to_sym).blank?
+          # Make placeholders replacements Replace if data back is needed and source field is not blank
+          subject = subject.gsub(self.show_ph(ph), mail.mailable.send(ph.to_sym)) if back == true && !mail.mailable.send(ph.to_sym).blank? && field == "subject"
+          body = body.gsub(self.show_ph(ph), mail.mailable.send(ph.to_sym)) if back == true && !mail.mailable.send(ph.to_sym).blank? && field == "body"
+        end
+      end
+    end
+      
+    # Mark mails as need_update
+    if missing_placeholders.empty? && mail.needs_update == true
+      mail.needs_update = false
+      mail.needs_update_help = ""
+      mail.save      
+    elsif !missing_placeholders.empty?
+      mail.needs_update = true
+      mail.needs_update_help = missing_placeholders
+      mail.save
+    end
+    
+    # Return transformed data without saving if needed
+    if back == true
+      mail.subject = subject
+      mail.body = body
+      return mail
+    end    
+
+  end
+  
+  #----------------------------------------------------------------------------
+  def self.get_placeholders(mail)
+    self.send("#{mail.mailable.class.to_s.downcase.pluralize}_placeholders") + self.general_placeholders
+  end
 
   private
   # Make sure at least one user has been selected if the account is being shared.

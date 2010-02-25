@@ -4,6 +4,17 @@ if @mailing_mail.errors.empty?
     page[id].replace :partial => "mail", :collection => [ @mailing_mail ]
     page[id].visual_effect :highlight, :duration => 1.0
     page << refresh_sidebar(:index)
+    
+    unless @mailing_mail_next.blank?
+      @mailing_mail = @mailing_mail_next
+      new_id = "mailing_mail_#{params[:next_mail].to_i}"
+      page.call "crm.highlight_off", new_id
+      page[new_id].replace_html :partial => "mailing_mails/edit"
+      page[new_id].visual_effect :highlight, :duration => 1.0  
+      page[:mailing_mail_submit].focus
+    end
+    
+    
 else  
   page[id].replace_html :partial => "edit"
   page[id].visual_effect :shake, :duration => 0.25, :distance => 6

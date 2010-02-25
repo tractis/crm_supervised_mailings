@@ -5,7 +5,7 @@
   = link_to_inline(:options, options_mailings_path, :text=> t(:options))
 
 .title
-  %span#create_mailing_title= t(:mailing_title)
+  %span#create_mailing_title= t(:mailing_title, t(@current_user.pref[:mailings_filter] || Mailing.filter))
   = image_tag("loading.gif", :size => "16x16", :id => "loading", :style => "display: none;")
 .remote#options{ hidden }
 .remote#create_mailing{ hidden }

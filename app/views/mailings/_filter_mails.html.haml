@@ -1,0 +1,11 @@
+- filter_menu_items = %w(all new sent needs_data ready).inject([]) do |items, filter_mails|
+  - name = t("option_#{filter_mails}")
+  - items << %Q[{ name: "#{name.titleize}", on_select: function() { #{redraw_mails(:filter_mails, filter_mails, @mailing.id)} } }]
+  
+:plain
+  new crm.Menu({
+    trigger   : "filter_mails",
+    fade      : 0.5,
+    appear    : 0.5,
+    menu_items: [ #{filter_menu_items.join(",")} ]
+  });

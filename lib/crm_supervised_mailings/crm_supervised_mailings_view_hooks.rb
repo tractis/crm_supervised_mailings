@@ -1,5 +1,5 @@
 class CrmSupervisedMailingsViewHooks < FatFreeCRM::Callback::Base
-  
+
   ACTIONS_FOR_SHOW = <<EOS
 %br
 %h4= get_supervised_mailings_translation('mailings')
@@ -103,14 +103,11 @@ create_or_select_mailing = function(selector) {
     this.select_mailing();          // mailings dropdown
   }
 }
+
 //----------------------------------------------------------------------------
 create_or_select_mailing(1);
-EOS
 
-  #----------------------------------------------------------------------------
-#  def javascript_epilogue(view, context = {})
-#    SM_JAVASCRIPT
-#  end
+EOS
 
   #----------------------------------------------------------------------------
   [ :account, :contact, :lead ].each do |model|
@@ -118,7 +115,7 @@ EOS
     define_method :"index_#{model}_sidebar_bottom" do |view, context|
       Haml::Engine.new(ACTIONS_FOR_SHOW).render(view, :model => context[model])
     end
-      #view.controller.send(:render_to_string, :partial => "accounts/issues")
-  end
 
+  end
+  
 end

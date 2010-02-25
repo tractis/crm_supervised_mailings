@@ -26,7 +26,7 @@ module MailingsHelper
 
   #----------------------------------------------------------------------------
   def link_to_mail_edit(mailing_mail)
-    link_to_remote(t(:edit), :method => :get, :url => edit_mailing_mail_path(mailing_mail))
+    link_to_remote(t(:send), :method => :get, :url => edit_mailing_mail_path(mailing_mail))
   end
   
   #----------------------------------------------------------------------------
@@ -37,5 +37,31 @@ module MailingsHelper
       :before => visual_effect(:highlight, dom_id(mailing_mail), :startcolor => "#ffe4e1")
     )
   end
+
+  # Ajax helper to refresh current index page once the user selects an option.
+  #----------------------------------------------------------------------------
+  def redraw_mails(option, value, mailing)
+    if value.is_a?(Array)
+      param, value = value.first, value.last
+    end
+    remote_function(
+      :url       => send("redraw_mails_#{controller.controller_name}_path"),
+      :with      => "{ #{option}: '#{param || value}', 'related': #{mailing} }",
+      :condition => "$('#{option}').innerHTML != '#{value}'",
+      :loading   => "$('#{option}').update('#{value}'); $('loading').show()",
+      :complete  => "$('loading').hide()"
+    )
+  end
+  
+  #----------------------------------------------------------------------------
+  def mails_highlightable(id = nil,  color = {}, status = "sent")
+    color = { :on => "seashell", :off => "white" }.merge(color)
+    show = (id ? "$('#{id}').style.visibility='visible'" : "")
+    hide = (id ? "$('#{id}').style.visibility='hidden'" : "")
+    { :onmouseover => "this.style.background='#{color[:on]}'; #{show}",
+      :onmouseout  => "this.style.background='#{color[:off]}'; #{hide}",
+      :name        => status
+    }
+  end  
   
 end

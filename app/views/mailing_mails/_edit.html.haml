@@ -1,33 +1,37 @@
 .remote
-  - remote_form_for(@mailing_mail, :html => one_submit_only(:mailing_mail)) do |f|
+  - if @current_user.pref[:google_account].blank? || @current_user.pref[:google_password].blank?
     = link_to_close edit_mailing_mail_path(@mailing_mail)
-    = f.hidden_field :user_id
-    = f.error_messages
 
-    #mailing_mail
-      %table{ :width => 500, :cellpadding => 0, :cellspacing => 0 }
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label #{t :subject}:
-            = f.text_field :subject, :style => "width:240px"
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label #{t :body}:
-            = f.text_area :body, :style =>"width:480px", :rows => 8
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label.top.req #{t :general_placeholders}:
-            [[name]], [[email]], [[phone]], [[fax]]
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label.top.req #{t :contact_leads_placeholders}:
-            [[first_name]], [[last_name]], [[title]], [[department]], [[mobile]]. [[blog]]   
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label.top.req #{t :accounts_placeholders}:
-            [[website]]
-    
-    .buttonbar
-      = f.submit t(:save_mailing_mail)
-      #{t :or}
-      = link_to_cancel edit_mailing_mail_path(@mailing_mail)
+    #mailing_mail    
+    .label.req= t(:profile_needs_update, :link => link_to(t(:update), profile_path))
+  - else
+    - remote_form_for(@mailing_mail, :html => one_submit_only_and_next_mail(:mailing_mail)) do |f|
+      = link_to_close edit_mailing_mail_path(@mailing_mail)
+      = f.hidden_field :user_id
+      = hidden_field_tag :next_mail
+      = f.error_messages
+  
+      #mailing_mail
+        %table{ :width => 500, :cellpadding => 0, :cellspacing => 0 }
+          %tr
+            %td{ :valign => :top, :colspan => 3 }
+              - if @mailing_mail.needs_update == false
+                = image_tag("/plugin_assets/crm_supervised_mailings/images/gadu.png", :size => "22x22", :style => "vertical-align: middle")
+                = t(:mail_will_be_sent, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
+              - else
+                = image_tag("/plugin_assets/crm_supervised_mailings/images/info.png", :size => "22x22", :style => "vertical-align: middle")
+                = t(:mail_not_be_sent, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
+                .label= @mailing_mail.needs_update_help
+          %tr
+            %td{ :valign => :top, :colspan => 3 }
+              .label #{t :subject}:
+              = f.text_field :subject, :style => "width:240px"
+          %tr
+            %td{ :valign => :top, :colspan => 3 }
+              .label #{t :body}:
+              = f.text_area :body, :style =>"width:480px", :rows => 8
+              
+      .buttonbar
+        = f.submit t(:send)
+        #{t :or}
+        = link_to_cancel edit_mailing_mail_path(@mailing_mail)

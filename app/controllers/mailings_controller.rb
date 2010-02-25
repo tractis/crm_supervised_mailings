@@ -23,7 +23,6 @@ class MailingsController < ApplicationController
   def show
     @mailing = Mailing.my(@current_user).find(params[:id])
     @mailing_mails = get_mailings_mails(:page => params[:page])
-    #@mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
     @users = User.except(@current_user).all
 
     respond_to do |format|
@@ -59,6 +58,51 @@ class MailingsController < ApplicationController
     @previous ||= $1.to_i
     respond_to_not_found(:js) unless @mailing
   end
+  
+  # GET /mailings/1/start                                                AJAX
+  #----------------------------------------------------------------------------
+  def start
+    @mailing = Mailing.my(@current_user).find(params[:id])
+    @users = User.except(@current_user).all
+    
+    if params[:previous] =~ /(\d+)\z/
+      @previous = Mailing.find($1)
+    end
+
+  rescue ActiveRecord::RecordNotFound
+    @previous ||= $1.to_i
+    respond_to_not_found(:js) unless @mailing
+  end  
+
+  # GET /mailing_mails/1/edit                                                      AJAX
+  #----------------------------------------------------------------------------
+  def edit
+    @mail = MailingMail.find(params[:id])
+    @mailing = Mailing.find(@mail.mailing_id)
+    # Check and transform Transform data from source
+    @mailing_mail = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true) 
+    
+    @users = User.except(@current_user).all
+
+    if params[:previous] =~ /(\d+)\z/
+      @previous = MailingMail.find($1)
+    end
+  rescue ActiveRecord::RecordNotFound
+    @previous ||= $1.to_i
+    respond_to_not_found(:js) unless @mailing_mail
+  end  
+
+
+
+
+
+
+
+
+
+
+
+
 
   # POST /mailings
   # POST /mailings.xml                                                  AJAX
@@ -160,11 +204,22 @@ class MailingsController < ApplicationController
   # GET /mailings/options                                                 AJAX
   #----------------------------------------------------------------------------
   def options
-    # We use here the mailing_mails settings (in mailing list is not used by now)
     unless params[:cancel].true?
       @per_page = @current_user.pref[:mailings_per_page] || Mailing.per_page
       @sort_by  = @current_user.pref[:mailings_sort_by]  || Mailing.sort_by
       @filter   = @current_user.pref[:mailings_filter]   || Mailing.filter
+    end
+  end
+
+  # GET /mailings/options_mail                                             AJAX
+  #----------------------------------------------------------------------------
+  def options_mails
+    @mailing = Mailing.my(@current_user).find(params[:related]) if params[:related]
+    
+    unless params[:cancel].true?
+      @per_page_mails = @current_user.pref[:mailings_mail_per_page] || MailingMail.per_page
+      @sort_by_mails  = @current_user.pref[:mailings_mail_sort_by]  || MailingMail.sort_by
+      @filter_mails   = @current_user.pref[:mailings_mail_filter]   || MailingMail.filter
     end
   end
 
@@ -177,12 +232,22 @@ class MailingsController < ApplicationController
     @mailings = get_mailings(:page => 1)
     render :action => :index
   end
-  
-  private
+
+  # POST /mailings/redraw_mails                                            AJAX
   #----------------------------------------------------------------------------
-#  def get_mailings(options = { :page => nil, :query => nil })
-#    Mailing.my(@current_user).find(:all)
-#  end
+  def redraw_mails
+    @mailing = Mailing.my(@current_user).find(params[:related])
+    @users = User.except(@current_user).all      
+    
+    @current_user.pref[:mailing_mails_sort_by]  = MailingMail::sort_by_map[params[:sort_by]] if params[:sort_by]
+    @current_user.pref[:mailing_mails_filter]   = params[:filter_mails] if params[:filter_mails]
+    
+    render :update do |page| 
+      page.redirect_to(@mailing)
+    end    
+  end  
+   
+  private
 
   #----------------------------------------------------------------------------
   def get_mailings(options = { :page => nil, :query => nil })
@@ -201,10 +266,8 @@ class MailingsController < ApplicationController
 
     if current_query.blank?
       if current_filter.empty? || current_filter == "all"  
-        p "vacío o all (#{current_filter})"
         Mailing.my(records)
       else
-        p "con filter válido (#{current_filter})"
         Mailing.my(records).filter_by_status(current_filter)
       end
     else
@@ -221,21 +284,19 @@ class MailingsController < ApplicationController
   def get_mailings_mails(options = { :page => nil, :query => nil })
     self.current_page = options[:page] if options[:page]
     self.current_query = options[:query] if options[:query]
-
-    records = {
-      #:user => @current_user,
-      :order => @current_user.pref[:mailings_mails_sort_by] || MailingMail.sort_by,
-      :conditions => { :mailing_id => @mailing.id },
-      :include => :mailable
-    }
-    pages = {
-      :page => current_page,
-      :per_page => @current_user.pref[:mailings_mails_per_page]
-    }
-
-    MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable, :order => @current_user.pref[:mailings_mails_sort_by] || MailingMail.sort_by).paginate(pages)
-    #MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
     
+    current_filter = @current_user.pref[:mailing_mails_filter] || MailingMail.filter
+    current_order = @current_user.pref[:mailing_mails_sort_by] || MailingMail.sort_by
+
+    conditions = { :mailing_id => @mailing.id }
+    conditions[:status] = current_filter if current_filter == "new" || current_filter == "sent"
+    conditions[:needs_update] = true if current_filter == "needs_data"
+    if current_filter == "ready"
+      conditions[:needs_update] = false
+      conditions[:status] = "new"
+    end    
+
+    MailingMail.find(:all, :conditions => conditions, :include => :mailable, :order => current_order)
   end
   
   #----------------------------------------------------------------------------
@@ -256,39 +317,12 @@ class MailingsController < ApplicationController
 
   def check_mails
     
-    @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id }, :include => :mailable)
+    @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id, :status => "new" }, :include => :mailable)
 
     @mailing_mails.each do |mail|
-      check_and_update_mail_anchors(mail)
+      Mailing.check_and_update_mail_placeholders(mail, @mailing)
     end
 
-  end
-
-  #----------------------------------------------------------------------------
-  def check_and_update_mail_anchors(mail)
-    placeholders = Mailing.send("#{mail.mailable.class.to_s.downcase.pluralize}_placeholders") + Mailing.general_placeholders
-
-    # Detects placeholders on subject and body to check against the mail asset
-    missing_placeholders = ""
-
-    ["subject", "body"].each do |field|
-      placeholders.each do |ph|
-        if @mailing.send(field.to_sym).include? Mailing.show_ph(ph)
-          missing_placeholders += "#{field}-#{ph}\n" if mail.mailable.send(ph.to_sym).empty?
-        end
-      end
-    end
-
-    # Mark mails as need_update
-    if missing_placeholders.empty? && mail.needs_update == true
-      mail.needs_update = false
-      mail.needs_update_help = ""
-      mail.save      
-    elsif !missing_placeholders.empty?
-      mail.needs_update = true
-      mail.needs_update_help = missing_placeholders
-      mail.save
-    end
   end
 
 end

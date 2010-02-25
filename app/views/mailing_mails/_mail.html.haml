@@ -1,19 +1,27 @@
-%li[mail]{ highlightable(dom_id(mail, :tools)) }
+- type = mail.mailable_type.to_s.downcase
+%li[mail]{ mails_highlightable(dom_id(mail, :tools), {}, mail.status) }
   
   - if mail.status == "new"
-    .strip{:style => "background:bisque;"} #{t(mail.status)} <br /> #{t(:mailing_from, t(mail.mailable_type))}
+    .strip{:style => "background:bisque;"} #{t(mail.status)}
   - else
-    .strip{:style => "background:palegreen;"} #{t(mail.status)} <br /> #{t(:mailing_from, t(mail.mailable_type))}
+    .strip{:style => "background:palegreen;"} #{t(mail.status)}
   
   .tools{ invisible, :id => dom_id(mail, :tools) }
-    = link_to_mail_edit(mail) << " | "
-    = link_to_mail_confirm(mail)
+    - unless mail.status == "sent"	
+      = link_to_mail_edit(mail) << " | "
+      = link_to_mail_confirm(mail)
         
   .indent
-    - if mail.needs_update == true
-      .strip{:style => "background:lightcoral;"} #{t(:needs_update)}: #{mail.needs_update_help}
     = get_asset_link(mail.mailable)
     %tt
-      = truncate(mail.subject, :length => 82)
+      = " - " << t(:added_by, :time_ago => time_ago_in_words(mail.created_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
     %dt{ :style => "padding: 2px 0px 0px 0px" }
-      = t(:added_ago, time_ago_in_words(mail.created_at))
+    - if mail.status == "sent"
+      = t(:mailing_sent, :models => t(type), :time_ago => time_ago_in_words(mail.sent_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
+    - else
+      - if mail.needs_update == true
+        = image_tag("/plugin_assets/crm_supervised_mailings/images/info.png", :size => "16x16", :style => "vertical-align: middle")
+        = t(:mailing_from_needs_data, :models => t(type), :information => mail.needs_update_help)
+      - else
+        = t(:mailing_from_ready, :models => t(type))
+    -#= render :partial => "#{type}s/#{type}", :collection => mail.mailable

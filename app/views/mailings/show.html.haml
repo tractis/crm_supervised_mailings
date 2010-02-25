@@ -1,21 +1,30 @@
+= styles_for :mailing
+
+- content_for :javascript do
+  = render :file => "mailings/crm_mailings.js"
+
 #confirm{ hidden }
 .title_tools#menu
   = link_to(t(:check), check_mailing_path(@mailing)) + " | "
   = link_to_inline(:edit_mailing, edit_mailing_path(@mailing), :text => t(:edit)) + " | "
-  = link_to_function(t(:delete) + '?', confirm_delete(@mailing)) + " | "
-  = link_to_inline(:options, options_mailings_path, :text=> t(:options))
+  = link_to_function(t(:delete) + '?', confirm_delete(@mailing))
 .title#edit_mailing_title= h(@mailing.name)
 
 %div#edit_mailing{ hidden }
 
 -#-----------------------------------------------------------------------------
 %br
-= inline :create_mailing, new_mailing_path, { :class => "subtitle_tools", :related => dom_id(@mailing), :text=> t(:start_mailing) }
-.subtitle#create_mailing_mail_title= t(:mailing_mails)
-.remote#options{ hidden }
+.title_tools#sub_menu
+  = inline :create_mailing, start_mailing_path(@mailing), { :class => "subtitle_tools", :related => dom_id(@mailing), :text=> t(:start_mailing) } unless @mailing_mails.blank?
+  = link_to_inline(:options, options_mails_mailings_path, { :text=> t(:options), :related => @mailing.id, :class => "subtitle_tools" }) + " | "
+.subtitle#create_mailing_mail_title= t(:mailing_mails, t(@current_user.pref[:mailing_mails_filter] || MailingMail.filter))
 .remote#create_mailing_mail{ hidden }
-.log#mailing_mails
-  = render :partial => "mailing_mails/mail", :collection => @mailing_mails
+.remote#options{ hidden }
+.list#mailing_mails
+  - unless @mailing_mails.blank?  
+    = render :partial => "mailing_mails/mail", :collection => @mailing_mails
+  - else
+    = render :partial => "mailing_mails/empty"
 
 - if params[:edit].true?
   %script{:type =>  'text/javascript'}

@@ -4,7 +4,6 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
       t.string     :name
       t.string     :status, :default => "open"
       t.text       :background_info
-      t.string     :email_from
       t.string     :subject
       t.text       :body
       t.string     :sent_folder
@@ -29,6 +28,7 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
 
       t.timestamps
       t.datetime   :deleted_at
+      t.datetime   :sent_at
     end
     
     add_index :mailing_mails, [:mailing_id, :status]
