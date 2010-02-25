@@ -45,3 +45,4 @@ en-US:
   subject: Subject
   body: Body
   edit_asset: Edit {{value}}
+  attachment: Attachment

@@ -18,16 +18,20 @@
         %td{ :valign => :top, :colspan => 3 }
           .label #{t :sent_folder}:
           = f.text_field :sent_folder, :style => "width:240px"
-        - if edit
-          %tr
-            %td{ :valign => :top, :colspan => 3 }
-              .label.top.req #{t :general_placeholders}:
-              [[name]], [[email]], [[phone]], [[fax]]
-          %tr
-            %td{ :valign => :top, :colspan => 3 }
-              .label.top.req #{t :contact_leads_placeholders}:
-              [[first_name]], [[last_name]], [[title]], [[department]], [[mobile]]. [[blog]]   
-          %tr
-            %td{ :valign => :top, :colspan => 3 }
-              .label.top.req #{t :accounts_placeholders}:
-              [[website]]
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label #{t :attachment}:        
+          = f.file_field :attachment, :style => "width:240px"         
+      - if edit
+        %tr
+          %td{ :valign => :top, :colspan => 3 }
+            .label.top.req #{t :general_placeholders}:
+            [[name]], [[email]], [[phone]], [[fax]]
+        %tr
+          %td{ :valign => :top, :colspan => 3 }
+            .label.top.req #{t :contact_leads_placeholders}:
+            [[first_name]], [[last_name]], [[title]], [[department]], [[mobile]]. [[blog]]   
+        %tr
+          %td{ :valign => :top, :colspan => 3 }
+            .label.top.req #{t :accounts_placeholders}:
+            [[website]]

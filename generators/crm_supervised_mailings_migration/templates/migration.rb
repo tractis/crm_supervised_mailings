@@ -10,6 +10,10 @@ class CrmSupervisedMailingsMigration < ActiveRecord::Migration
       t.references :user
       t.integer    :assigned_to
       t.string     :access, :limit => 8, :default => "Private"
+      t.string     :attachment_file_name
+      t.string     :attachment_content_type
+      t.integer    :attachment_file_size
+      t.datetime   :attachment_updated_at
       
       t.timestamps
       t.datetime   :deleted_at

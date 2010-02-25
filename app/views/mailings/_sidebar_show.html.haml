@@ -3,6 +3,10 @@
   %li
     %dt#mailing_status= t(@mailing.status)
     %tt #{t :status}:
+  - if @mailing.attachment
+    %li
+      %dt#mailing_attachment= truncate(@mailing.attachment_file_name, 25, "...")
+      %tt #{t :attachment}:    
     
   - if @mailing.background_info && !@mailing.background_info.empty?
     %br

@@ -1,6 +1,7 @@
 class Mailing < ActiveRecord::Base
   has_many    :mailing_mails, :dependent => :destroy
   belongs_to  :user
+  has_attached_file :attachment, :url => "/../files/supervised_mailings/attachments/:id/:filename"
   
   simple_column_search :name, :match => :middle, :escape => lambda { |query| query.gsub(/[^\w\s\-\.']/, "").strip }
   uses_user_permissions

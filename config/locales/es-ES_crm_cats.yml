@@ -45,3 +45,4 @@ es-ES:
   subject: Asunto
   body: Mensaje
   edit_asset: Editar {{value}}
+  attachment: Adjunto
