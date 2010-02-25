@@ -19,7 +19,7 @@ en-US:
   new: Pending
   sent: Sent
   mailing_from_ready: "<b>{{models}}</b>: is ready to be sent."
-  mailing_from_needs_data: "<b>{{models}}</b>: needs the following fields filled {{information}}."
+  mailing_from_needs_data: "<b>{{models}}</b>: needs the following fields filled {{information}}"
   needs_update: Update Needed
   check: Check
   mailing_show_per_page: Show {{number}} {{models}} per page showing {{filter}}.
@@ -38,7 +38,10 @@ en-US:
   how_to_add_emails: You can add mails from the accounts, contact and leads pages
   send: Send
   mailing_sent: "<b>{{models}}</b>: sent {{time_ago}} ago by {{user}}"
-  mail_will_be_sent: Mail will be sent to {{to}} from {{from}}
-  mail_not_be_sent: ¡Warning! This mail not will be sent until you complete the missing fields (to {{to}} from {{from}})
+  mail_will_be_sent: <b>From:</b> {{from}} <b>to:</b> {{to}}
+  mail_not_be_sent: ¡Data neeeded! <b>From:</b> {{from}} <b>to:</b> {{to}}
   profile_needs_update: Your email credentials are not set, please {{link}} your profile first
   no_mails_to_send: No mails to send
+  subject: Subject
+  body: Body
+  edit_asset: Edit {{value}}

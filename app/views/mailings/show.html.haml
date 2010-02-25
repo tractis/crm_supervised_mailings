@@ -3,6 +3,9 @@
 - content_for :javascript do
   = render :file => "mailings/crm_mailings.js"
 
+- content_for :styles do
+  = render :file => "mailings/crm_mailings.css"
+
 #confirm{ hidden }
 .title_tools#menu
   = link_to(t(:check), check_mailing_path(@mailing)) + " | "

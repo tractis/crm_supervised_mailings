@@ -19,7 +19,7 @@ es-ES:
   new: Pendiente
   sent: Enviado
   mailing_from_ready: "<b>{{models}}</b>: está listo para enviar."
-  mailing_from_needs_data: "<b>{{models}}</b>: necesita los siguientes campos rellenos {{information}}."
+  mailing_from_needs_data: "<b>{{models}}</b>: necesita los siguientes campos rellenos {{information}}"
   needs_update: Faltan datos
   check: Comprobar
   mailing_show_per_page: Mostrar {{number}} {{models}} por página mostrando {{filter}}.
@@ -38,7 +38,10 @@ es-ES:
   how_to_add_emails: Puedes añadir emails desde cuentas, contactos e iniciativas
   send: Enviar
   mailing_sent: "<b>{{models}}</b>: enviado hace {{time_ago}} por {{user}}"
-  mail_will_be_sent: El email será enviado a {{to}} desde {{from}}
-  mail_not_be_sent: ¡Aviso! El email no será enviado hasta que se completen los campos que faltan (a {{to}} desde {{from}})
+  mail_will_be_sent: <b>De:</b> {{from}} <b>a:</b> {{to}}
+  mail_not_be_sent: ¡Faltan Datos! <b>De:</b> {{from}} <b>a:</b> {{to}}
   profile_needs_update: Tu cuenta de email no está configurada, por favor {{link}} tu perfil primero
   no_mails_to_send: No se han encontrado emails para enviar
+  subject: Asunto
+  body: Mensaje
+  edit_asset: Editar {{value}}

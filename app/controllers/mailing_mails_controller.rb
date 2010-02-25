@@ -7,7 +7,7 @@ class MailingMailsController < ApplicationController
     @mail = MailingMail.find(params[:id])
     @mailing = Mailing.find(@mail.mailing_id)
     # Check and transform Transform data from source
-    @mailing_mail = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true) 
+    @mailing_mail = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true)
     
     @users = User.except(@current_user).all
 
@@ -17,7 +17,7 @@ class MailingMailsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     @previous ||= $1.to_i
     respond_to_not_found(:js) unless @mailing_mail
-  end  
+  end 
   
   # PUT /mailing_mails/1
   # PUT /mailing_mails/1.xml                                                       AJAX

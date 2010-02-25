@@ -23,7 +23,7 @@ else # <----------------------------------------  Show [Edit mailing_mail] form.
   end
   
   unless @current_user.pref[:google_account].blank? || @current_user.pref[:google_password].blank?  
-    page[:mailing_mail_subject].focus
+    page[:mailing_mail_submit].focus
   end
 
 end
