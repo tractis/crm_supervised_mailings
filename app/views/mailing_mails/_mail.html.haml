@@ -21,7 +21,8 @@
       - else
         = t(:mailing_from_ready, :models => t(type))
     %tt
-      = " - " << t(:added_by, :time_ago => time_ago_in_words(mail.created_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
+      - if mail.status == "new"
+        = " - " << t(:added_by, :time_ago => time_ago_in_words(mail.created_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
     %dt{ :style => "padding: 2px 0px 0px 0px" }
     - if mail.status == "new"      
       = render :partial => "#{type}s/#{type}", :locals => { type.to_sym => mail.mailable }
