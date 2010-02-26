@@ -9,6 +9,7 @@ Dispatcher.to_prepare do
   # Extend :account/contact model to add :mailing_mails association.
   Account.send(:include, AccountMailingMailAssociations)
   Contact.send(:include, ContactMailingMailAssociations)
+  Lead.send(:include, LeadMailingMailAssociations)
   
   # Make issues observable.
   ActivityObserver.instance.send :add_observer!, Mailing

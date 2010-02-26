@@ -109,7 +109,7 @@ class MailingsController < ApplicationController
   #----------------------------------------------------------------------------
   def update
     @mailing = Mailing.my(@current_user).find(params[:id])
-
+    
     respond_to do |format|
       if @mailing.update_with_permissions(params[:mailing], params[:users])
 

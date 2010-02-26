@@ -46,3 +46,4 @@ en-US:
   body: Body
   edit_asset: Edit {{value}}
   attachment: Attachment
+  with_attachment: Current attachment ({{value}}) or upload new

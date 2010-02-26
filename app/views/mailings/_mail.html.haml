@@ -20,7 +20,10 @@
           = f.text_field :sent_folder, :style => "width:240px"
       %tr
         %td{ :valign => :top, :colspan => 3 }
-          .label #{t :attachment}:        
+          - unless @mailing.attachment_file_name.blank?
+            .label #{t :with_attachment, @mailing.attachment_file_name}: 
+          - else
+            .label #{t :attachment}:        
           = f.file_field :attachment, :style => "width:240px"         
       - if edit
         %tr

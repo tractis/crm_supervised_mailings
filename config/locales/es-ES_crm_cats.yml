@@ -46,3 +46,4 @@ es-ES:
   body: Mensaje
   edit_asset: Editar {{value}}
   attachment: Adjunto
+  with_attachment: Adjunto actual ({{value}}) o sube uno nuevo

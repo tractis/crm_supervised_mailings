@@ -1,7 +1,7 @@
 - @mailing_mail.needs_update == true ? remote_class = "remote_needs_data" : remote_class = "remote"
 %div{ :class => remote_class }
         
-  - if @current_user.pref[:google_account].blank? || @current_user.pref[:google_password].blank?
+  - unless google_account_is_defined
     = link_to_close edit_mailing_mail_path(@mailing_mail)
 
     #mailing_mail    
