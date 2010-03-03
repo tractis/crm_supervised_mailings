@@ -30,9 +30,13 @@ module CrmSupervisedMailings
       
       items = self.send("get_#{self.controller_name.to_s}")      
       items.each do |item|
-        MailingMail.create(:mailing_id => mailing.id, :user_id => 1, :mailable => item)
-      end 
-
+        mail = MailingMail.create(:mailing_id => mailing.id, :user => @current_user, :mailable => item)
+        # if adding to an existing mail, check the mail placeholders
+        unless params[:mailing][:id].nil?
+          Mailing.check_and_update_mail_placeholders(mail, mailing)
+        end
+      end
+      
       redirect_to mailing_path(mailing, {:edit => edit})
     end
 

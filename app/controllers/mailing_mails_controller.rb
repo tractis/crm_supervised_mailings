@@ -143,7 +143,7 @@ private
         plain, html = new_email.generate_multipart('text/plain', 'text/html')
         plain.content = body
         html.content = body
-        new_email.attach_file("#{RAILS_ROOT}/files/supervised_mailings/attachments/#{mailing.id}/#{mailing.attachment_file_name}") if mailing.attachment
+        new_email.attach_file("#{RAILS_ROOT}/files/supervised_mailings/attachments/#{mailing.id}/#{mailing.attc_file_name}") unless mailing.attc_file_name.blank?
         g.send_email(new_email)
         #gmail_email.move_to(folder)
       end

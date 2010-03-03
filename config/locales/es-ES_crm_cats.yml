@@ -47,3 +47,7 @@ es-ES:
   edit_asset: Editar {{value}}
   attachment: Adjunto
   with_attachment: Adjunto actual ({{value}}) o sube uno nuevo
+  upload_attachment: Subir adjunto
+  overwrite_attachment: Sobreescribir adjunto
+  save_mailing: Guardar
+  mail_info: Información del email 

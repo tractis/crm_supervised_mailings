@@ -47,3 +47,7 @@ en-US:
   edit_asset: Edit {{value}}
   attachment: Attachment
   with_attachment: Current attachment ({{value}}) or upload new
+  upload_attachment: Upload attachment
+  overwrite_attachment: Overwrite attachment
+  save_mailing: Save
+  mail_info: Mail information

@@ -59,11 +59,45 @@ class MailingsController < ApplicationController
     respond_to_not_found(:js) unless @mailing
   end
   
+  # POST /mailings/1/upload_attachment                                     HTML
+  #----------------------------------------------------------------------------
+  def upload_attachment
+    
+    @mailing = Mailing.my(@current_user).find(params[:id])
+    @users = User.except(@current_user).all
+    
+    if params[:mailing] && params[:mailing][:attc]
+      if @mailing.update_attributes(params[:mailing])
+        flash[:notice] = "#{@mailing.attc_file_name} uploaded correctly"
+      else
+        flash[:error] = "Problem uploading attachment"
+      end
+    else
+      flash[:error] = "You need to select a file to upload"
+    end
+    
+    redirect_to mailing_path(@mailing)
+    
+  end
+
+  # GET /mailings/1/attachment                                            HTML
+  #----------------------------------------------------------------------------  
+  def attachment
+    @mailing = Mailing.my(@current_user).find(params[:id])
+    
+    if @mailing.attc?
+      send_file "#{RAILS_ROOT}/files/supervised_mailings/attachments/#{@mailing.id}/#{@mailing.attc_file_name}", :type => @mailing.attc_content_type, :filename=> @mailing.attc_file_name, :disposition => 'attachment'      
+    else
+      flash[:notice] = "Attachment not found"
+      redirect_to mailing_path(@mailing)
+    end    
+  end
+  
   # GET /mailings/1/start                                                AJAX
   #----------------------------------------------------------------------------
   def start
     @mailing = Mailing.my(@current_user).find(params[:id])
-    @mailing_mails = get_mailings_mails(:page => params[:page], :filter => "new")
+    @mailing_mails = get_mailings_mails(:page => params[:page], :filter => "ready")
 
     if @mailing_mails.blank?
       flash[:notice] = t :no_mails_to_send
@@ -86,7 +120,7 @@ class MailingsController < ApplicationController
   def create   
     @mailing = Mailing.new(params[:mailing])
     @users = User.except(@current_user).all
-    
+
     respond_to do |format|
       if @mailing.save_with_permissions(params[:users])
         if params[:mailing_related_source]

@@ -1,11 +1,11 @@
-- remote_form_for(@mailing, :html => one_submit_only(:mailing)) do |f|
+- remote_form_for(@mailing, :html => { :onsubmit => "$('mailing_submit').disabled = true" }) do |f|
   = link_to_close new_mailing_path
   = hidden_field_tag "mailing[user_id]", @current_user.id
   = f.error_messages
   
   = render :partial => "mailings/top_section",   :locals => { :f => f }
   = render :partial => "mailings/mail"       ,   :locals => { :f => f }
-  = render :partial => "common/background_info", :locals => { :f => f }
+  = render :partial => "background_info", :locals => { :f => f }
   = render :partial => "mailings/permissions",   :locals => { :f => f }  
   .buttonbar
     = f.submit t(:create_mailing)

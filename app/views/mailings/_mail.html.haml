@@ -13,28 +13,16 @@
       %tr
         %td{ :valign => :top, :colspan => 3 }
           .label #{t :body}:
-          = f.text_area :body, :style =>"width:480px", :rows => 12
+          = f.text_area :body, :style =>"width:480px", :rows => 12 
       %tr
         %td{ :valign => :top, :colspan => 3 }
-          .label #{t :sent_folder}:
-          = f.text_field :sent_folder, :style => "width:240px"
+          .label.top.req #{t :general_placeholders}:
+          [[name]], [[email]], [[phone]], [[fax]]
       %tr
         %td{ :valign => :top, :colspan => 3 }
-          - unless @mailing.attachment_file_name.blank?
-            .label #{t :with_attachment, @mailing.attachment_file_name}: 
-          - else
-            .label #{t :attachment}:        
-          = f.file_field :attachment, :style => "width:240px"         
-      - if edit
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label.top.req #{t :general_placeholders}:
-            [[name]], [[email]], [[phone]], [[fax]]
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label.top.req #{t :contact_leads_placeholders}:
-            [[first_name]], [[last_name]], [[title]], [[department]], [[mobile]]. [[blog]]   
-        %tr
-          %td{ :valign => :top, :colspan => 3 }
-            .label.top.req #{t :accounts_placeholders}:
-            [[website]]
+          .label.top.req #{t :contact_leads_placeholders}:
+          [[first_name]], [[last_name]], [[title]], [[department]], [[mobile]]. [[blog]]   
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          .label.top.req #{t :accounts_placeholders}:
+          [[website]]

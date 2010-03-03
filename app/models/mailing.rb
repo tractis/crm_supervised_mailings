@@ -1,8 +1,7 @@
 class Mailing < ActiveRecord::Base
   has_many    :mailing_mails, :dependent => :destroy
   belongs_to  :user
-  has_attached_file :attachment, :url  => "/mailings/:id/attachment", :path => ":rails_root/files/supervised_mailings/attachments/:id/:filename"
-  #attr_accessible   :attachment
+  has_attached_file :attc, :url  => "/mailings/:id/attachment", :path => ":rails_root/files/supervised_mailings/attachments/:id/:filename"
   
   simple_column_search :name, :match => :middle, :escape => lambda { |query| query.gsub(/[^\w\s\-\.']/, "").strip }
   uses_user_permissions
@@ -15,7 +14,7 @@ class Mailing < ActiveRecord::Base
   validates_presence_of :body, :on => :update
   validates_uniqueness_of :name
   validate :users_for_shared_access
-  validates_attachment_size :attachment, :less_than => 5.megabytes
+  #validates_attachment_size :attachment, :less_than => 5.megabytes
 
   # Default values provided through class methods.
   #----------------------------------------------------------------------------
