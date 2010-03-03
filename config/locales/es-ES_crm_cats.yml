@@ -50,4 +50,6 @@ es-ES:
   upload_attachment: Subir adjunto
   overwrite_attachment: Sobreescribir adjunto
   save_mailing: Guardar
-  mail_info: Información del email 
+  mail_info: Información del email
+  mailing_name: Nombre del Mailing
+  intro_mailing: Es necesario rellenar el asunto y el cuerpo del mensaje.

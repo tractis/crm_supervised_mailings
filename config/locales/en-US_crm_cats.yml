@@ -51,3 +51,5 @@ en-US:
   overwrite_attachment: Overwrite attachment
   save_mailing: Save
   mail_info: Mail information
+  mailing_name: Mailing name
+  intro_mailing: You need to fill the subject and body.
