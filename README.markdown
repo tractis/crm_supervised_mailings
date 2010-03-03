@@ -8,9 +8,7 @@ Installation
 
 The plugin can be installed by running:
 
-    script/plugin install git://github.com/tractis/crm_google_account_settings.git
     script/plugin install git://github.com/tractis/crm_supervised_mailings.git
-    sudo gem install ruby-gmail -s http://gemcutter.org
     
 Then run the following command:
 

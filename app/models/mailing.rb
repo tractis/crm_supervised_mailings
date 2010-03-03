@@ -51,7 +51,7 @@ class Mailing < ActiveRecord::Base
   #----------------------------------------------------------------------------
   def self.check_and_update_mail_placeholders(mail, mailing, back = false)
     # Generate the list of placeholders for the mail source, wihtout mail because this is checked manually and not depends on mailing text
-    placeholders = self.get_placeholders(mail)
+    placeholders = self.get_placeholders
 
     # Detects placeholders on subject and body to check against the mail asset
     missing_placeholders = ""
@@ -67,10 +67,15 @@ class Mailing < ActiveRecord::Base
     ["subject", "body"].each do |field|
       placeholders.each do |ph|
         if mailing.send(field.to_sym).include? Mailing.show_ph(ph)
-          missing_placeholders += "(#{field}-#{ph}) " if mail.mailable.send(ph.to_sym).blank?
-          # Make placeholders replacements Replace if data back is needed and source field is not blank
-          subject = subject.gsub(self.show_ph(ph), mail.mailable.send(ph.to_sym)) if back == true && !mail.mailable.send(ph.to_sym).blank? && field == "subject"
-          body = body.gsub(self.show_ph(ph), mail.mailable.send(ph.to_sym)) if back == true && !mail.mailable.send(ph.to_sym).blank? && field == "body"
+          # Check if placeholder exists in model
+          if mail.mailable.respond_to?(ph.to_sym)
+            missing_placeholders += "(#{field}-#{ph}) " if mail.mailable.send(ph.to_sym).blank?
+            # Make placeholders replacements Replace if data back is needed and source field is not blank
+            subject = subject.gsub(self.show_ph(ph), mail.mailable.send(ph.to_sym)) if back == true && !mail.mailable.send(ph.to_sym).blank? && field == "subject"
+            body = body.gsub(self.show_ph(ph), mail.mailable.send(ph.to_sym)) if back == true && !mail.mailable.send(ph.to_sym).blank? && field == "body"            
+          else
+            missing_placeholders += "(#{field}-#{ph}-not-in-#{mail.mailable.class.to_s}) "
+          end
         end
       end
     end
@@ -96,8 +101,8 @@ class Mailing < ActiveRecord::Base
   end
   
   #----------------------------------------------------------------------------
-  def self.get_placeholders(mail)
-    self.send("#{mail.mailable.class.to_s.downcase.pluralize}_placeholders") + self.general_placeholders
+  def self.get_placeholders
+    self.accounts_placeholders + self.contacts_placeholders + self.general_placeholders
   end
 
   private

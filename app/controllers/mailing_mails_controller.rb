@@ -36,8 +36,10 @@ class MailingMailsController < ApplicationController
     
     if @mailing_mail.needs_update == false
       # Sending email
-      send_response = send_mail(@mailing, @mailing_mail)
-      if send_response == true
+      begin
+        new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]))
+        MailingNotifier.deliver(new_email)
+        
         # Making a comment on asset
         Comment.create(:title => "mailing_id_#{@mailing.id}", :user => @current_user, :commentable => @mailing_mail.mailable, :comment => "#{params[:mailing_mail][:subject]}\n\n#{params[:mailing_mail][:body]}")    
     
@@ -60,9 +62,9 @@ class MailingMailsController < ApplicationController
             format.xml  { render :xml => @mailing_mail.errors, :status => :unprocessable_entity }
           end
         end
-      else
+      rescue Net::SMTPFatalError => e
         # Error sending email
-        flash[:notice] = send_response
+        flash[:error] = e.to_s
         #redirect_to(mailings_path)
         render :update do |page| 
           page.redirect_to(@mailing)
@@ -125,31 +127,4 @@ private
     end
   end 
   
-  def send_mail(mailing, mail)
-    require 'gmail'
-    
-    #folder = "crm_mailings" if mailing.sent_folder.blank?
-    subject = params[:mailing_mail][:subject]
-    body = params[:mailing_mail][:body]
-    #TODO: add folder label to message
-    #TODO: Add atachments
-    #require 'ruby-debug';debugger    
-    
-    begin
-      gmail = Gmail.new(@current_user.pref[:google_account], @current_user.pref[:google_password]) do |g|
-        new_email = MIME::Message.generate
-        new_email.to mail.mailable.email
-        new_email.subject subject
-        plain, html = new_email.generate_multipart('text/plain', 'text/html')
-        plain.content = body
-        html.content = body
-        new_email.attach_file("#{RAILS_ROOT}/files/supervised_mailings/attachments/#{mailing.id}/#{mailing.attc_file_name}") unless mailing.attc_file_name.blank?
-        g.send_email(new_email)
-        #gmail_email.move_to(folder)
-      end
-      return true
-    rescue Net::IMAP::NoResponseError => ex
-      return ex.message
-    end
-  end
 end
