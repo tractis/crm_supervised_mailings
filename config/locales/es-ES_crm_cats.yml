@@ -65,3 +65,6 @@ es-ES:
   mailing_not_created_correctly: No se pudo crear el mailing
   mailing_updated_correctly: Mailing actualizado con éxito
   mailing_not_updated_correctly: No se pudo actualizar el mailing
+  ready: Listos para enviar
+  needs_data: Actualización de datos necesaria
+  total_mails: "<b>Total</b>"

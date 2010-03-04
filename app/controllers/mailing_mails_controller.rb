@@ -1,5 +1,6 @@
 class MailingMailsController < ApplicationController
   before_filter :require_user
+  before_filter :get_data_for_sidebar, :only => :update
 
   # GET /mailing_mails/1/edit                                                      AJAX
   #----------------------------------------------------------------------------
@@ -36,7 +37,7 @@ class MailingMailsController < ApplicationController
     
     if @mailing_mail.needs_update == false
       # Sending email
-      begin
+#      begin
         new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]))
         MailingNotifier.deliver(new_email)
         
@@ -54,6 +55,7 @@ class MailingMailsController < ApplicationController
               # Check and transform Transform data from source
               @mailing_mail_next = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true)               
             end
+            get_data_for_sidebar
             
             format.js   # update.js.rjs
             format.xml  { head :ok }
@@ -62,14 +64,14 @@ class MailingMailsController < ApplicationController
             format.xml  { render :xml => @mailing_mail.errors, :status => :unprocessable_entity }
           end
         end
-      rescue Net::SMTPFatalError => e
-        # Error sending email
-        flash[:error] = e.to_s
-        #redirect_to(mailings_path)
-        render :update do |page| 
-          page.redirect_to(@mailing)
-        end
-      end
+#      rescue
+#        # Error sending email
+#        flash[:error] = t :error_sendig_mail
+#        #redirect_to(mailings_path)
+#        render :update do |page| 
+#          page.redirect_to(@mailing)
+#        end
+#      end
     else
       # Mail has placeholders, return to edit updated
       @users = User.except(@current_user).all      
@@ -126,5 +128,25 @@ private
       redirect_to(mailing_mails_path)
     end
   end 
+
+  #----------------------------------------------------------------------------
+  def get_data_for_sidebar_before()
+    @mails_stats_total = 0
+    @mails_stats = {}
+    @mails_stats[:sent] = 0
+    @mails_stats[:ready] = 0
+    @mails_stats[:needs_data] = 0
+  end
+  #----------------------------------------------------------------------------
+  def get_data_for_sidebar()
+    @mailing_mail_for_sidebar = MailingMail.find(params[:id])
+    
+    @mails_stats_total = MailingMail.count(:conditions => [ "mailing_id=?", @mailing_mail_for_sidebar.mailing_id ])
+    
+    @mails_stats = {}
+    @mails_stats[:sent] = MailingMail.count(:conditions => [ "mailing_id=? and status=?", @mailing_mail_for_sidebar.mailing_id, "sent" ])
+    @mails_stats[:ready] = MailingMail.count(:conditions => [ "mailing_id=? and status=? and needs_update=?", @mailing_mail_for_sidebar.mailing_id, "new", false ])
+    @mails_stats[:needs_data] = MailingMail.count(:conditions => [ "mailing_id=? and status=? and needs_update=?", @mailing_mail_for_sidebar.mailing_id, "new", true ])
+  end  
   
 end

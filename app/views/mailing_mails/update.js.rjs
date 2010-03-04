@@ -3,7 +3,6 @@ id = dom_id(@mailing_mail)
 if @mailing_mail.errors.empty?
     page[id].replace :partial => "mail", :collection => [ @mailing_mail ]
     page[id].visual_effect :highlight, :duration => 1.0
-    page << refresh_sidebar(:index)
     
     unless @mailing_mail_next.blank?
       @mailing_mail = @mailing_mail_next
@@ -13,7 +12,8 @@ if @mailing_mail.errors.empty?
       page[new_id].visual_effect :highlight, :duration => 1.0  
       page[:mailing_mail_submit].focus
     end
-    
+
+    page << refresh_sidebar(:show, :summary)
     
 else  
   page[id].replace_html :partial => "edit"

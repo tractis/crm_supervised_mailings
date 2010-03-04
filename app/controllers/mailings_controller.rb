@@ -2,6 +2,7 @@ class MailingsController < ApplicationController
   before_filter :require_user
   before_filter :set_current_tab
   before_filter :auto_complete, :only => :auto_complete
+  before_filter :get_data_for_sidebar, :only => :show
   after_filter  :update_recently_viewed, :only => :show
 
   # GET /mailings
@@ -57,27 +58,6 @@ class MailingsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     @previous ||= $1.to_i
     respond_to_not_found(:js) unless @mailing
-  end
-  
-  # POST /mailings/1/upload_attachment                                     HTML
-  #----------------------------------------------------------------------------
-  def upload_attachment
-    
-    @mailing = Mailing.my(@current_user).find(params[:id])
-    @users = User.except(@current_user).all
-    
-    if params[:mailing] && params[:mailing][:attc]
-      if @mailing.update_attributes(params[:mailing])
-        flash[:notice] = "#{@mailing.attc_file_name} uploaded correctly"
-      else
-        flash[:error] = "Problem uploading attachment"
-      end
-    else
-      flash[:error] = "You need to select a file to upload"
-    end
-    
-    redirect_to mailing_path(@mailing)
-    
   end
 
   # GET /mailings/1/attachment                                            HTML
@@ -313,14 +293,22 @@ class MailingsController < ApplicationController
     end
   end
 
-  def check_mails
-    
+  def check_mails 
     @mailing_mails = MailingMail.find(:all, :conditions => { :mailing_id => @mailing.id, :status => "new" }, :include => :mailable)
 
     @mailing_mails.each do |mail|
       Mailing.check_and_update_mail_placeholders(mail, @mailing)
     end
-
   end
 
+  #----------------------------------------------------------------------------
+  def get_data_for_sidebar(related = false)
+    @mails_stats_total = MailingMail.count(:conditions => [ "mailing_id=?", params[:id] ])
+    
+    @mails_stats = {}
+    @mails_stats[:sent] = MailingMail.count(:conditions => [ "mailing_id=? and status=?", params[:id], "sent" ])
+    @mails_stats[:ready] = MailingMail.count(:conditions => [ "mailing_id=? and status=? and needs_update=?", params[:id], "new", false ])
+    @mails_stats[:needs_data] = MailingMail.count(:conditions => [ "mailing_id=? and status=? and needs_update=?", params[:id], "new", true ])
+  end
+  
 end
