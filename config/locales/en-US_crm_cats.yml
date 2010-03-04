@@ -18,6 +18,7 @@ en-US:
   finished: Finished
   new: Pending
   sent: Sent
+  mailing_from: "<b>{{models}}</b>: {{link}}"
   mailing_from_ready: "<b>{{models}}</b>: is ready to be sent."
   mailing_from_needs_data: "<b>{{models}}</b>: needs the following fields filled {{information}}"
   needs_update: Update Needed
@@ -37,9 +38,8 @@ en-US:
   mails_options: Options for mails list
   how_to_add_emails: You can add mails from the accounts, contact and leads pages
   send: Send
-  mailing_sent: "<b>{{models}}</b>: sent {{time_ago}} ago by {{user}}"
-  mail_will_be_sent: <b>From:</b> {{from}} <b>to:</b> {{to}}
-  mail_not_be_sent: ¡Data neeeded! <b>From:</b> {{from}} <b>to:</b> {{to}}
+  mailing_sent: "<b>{{models}}</b>: {{link}} - sent {{time_ago}} ago by {{user}}"
+  mail_participants: <b>From:</b> {{from}} <b>to:</b> {{to}}
   profile_needs_update: Your email credentials are not set, please {{link}} your profile first
   no_mails_to_send: No mails to send
   subject: Subject
@@ -53,3 +53,11 @@ en-US:
   mail_info: Mail information
   mailing_name: Mailing name
   intro_mailing: You need to fill the subject and body.
+  mail_status: Email status
+  mail_status_ok: This message is ready to send
+  mail_status_ko: The following information is missing
+  mail_status_ko_info: Please, fill in the missing information or delete the empty fields before sending the message.
+  general_placeholders: General placeholders
+  contact_leads_placeholders: Contacts and leads placeholders
+  accounts_placeholders: Account placeholders
+  mail_needs_data: "<b>The following information is missing</b>: {{value}}"

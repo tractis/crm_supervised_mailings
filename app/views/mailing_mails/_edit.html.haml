@@ -18,18 +18,18 @@
           %tr
             %td{ :valign => :top, :colspan => 3 }
               %br
-              - if @mailing_mail.needs_update == false
-                = t(:mail_will_be_sent, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
-              - else
-                = t(:mail_not_be_sent, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
-                .label= @mailing_mail.needs_update_help
+              - if @mailing_mail.needs_update == true
+                = t(:mail_needs_data, @mailing_mail.needs_update_help)
+                %br
+                = t(:mail_status_ko_info)
+              .label= t(:mail_participants, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
           %tr
             %td{ :valign => :top, :colspan => 3 }
-              .label #{t :subject}:
+              .label.req #{t :subject}:
               = f.text_field :subject, :style => "width:480px"
           %tr
             %td{ :valign => :top, :colspan => 3 }
-              .label #{t :body}:
+              .label.req #{t :body}:
               = f.text_area :body, :style =>"width:480px", :rows => 10
               
       .buttonbar

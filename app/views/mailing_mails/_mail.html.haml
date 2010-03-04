@@ -1,4 +1,6 @@
 - type = mail.mailable_type.to_s.downcase
+- status_text = "<font color='red'>#{t(:mail_status)}</font>: #{t(:mail_status_ko)}: #{mail.needs_update_help}. #{t(:mail_status_ko_info)}" if mail.needs_update == true
+- status_text = "<font color='green'>#{t(:mail_status)}</font>: #{t(:mail_status_ok)}" if mail.needs_update == false
 %li[mail]{ mails_highlightable(dom_id(mail, :tools), {}, mail.status) }
   
   - if mail.status == "new"
@@ -13,21 +15,12 @@
         
   .indent
     - if mail.status == "sent"
-      = t(:mailing_sent, :models => t(type), :time_ago => time_ago_in_words(mail.sent_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
+      = t(:mailing_sent, :models => t(type), :link => get_asset_link(mail.mailable), :time_ago => time_ago_in_words(mail.sent_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
     - else
-      - if mail.needs_update == true
-        = image_tag("/plugin_assets/crm_supervised_mailings/images/info.png", :size => "16x16", :style => "vertical-align: middle")
-        = t(:mailing_from_needs_data, :models => t(type), :information => mail.needs_update_help)
-      - else
-        = t(:mailing_from_ready, :models => t(type))
+      = t(:mailing_from, :models => t(type), :link => get_asset_link(mail.mailable))
     %tt
       - if mail.status == "new"
         = " - " << t(:added_by, :time_ago => time_ago_in_words(mail.created_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
     %dt{ :style => "padding: 2px 0px 0px 0px" }
-    - if mail.status == "new"      
-      = render :partial => "#{type}s/#{type}", :locals => { type.to_sym => mail.mailable }
-      %script{:type =>  'text/javascript'}  
-        = render :update do |page|
-          = page.hide "tools_#{type}_#{mail.mailable_id}".to_sym
-    - else
-      = get_asset_link(mail.mailable) 
+    - if mail.status == "new"
+      = status_text
