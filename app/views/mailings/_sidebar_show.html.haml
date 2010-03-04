@@ -6,14 +6,7 @@
   - unless @mailing.attc_file_name.blank?
     %li
       %dt#mailing_attachment= link_to truncate(@mailing.attc_file_name, 20, "..."), attachment_mailing_path(@mailing)
-      %tt #{t :attachment}:    
-
-  - form_for(@mailing, :url => upload_attachment_mailing_path(@mailing, :method => :post), :html => { :multipart => true }) do |f|
-    = f.file_field :attc, :style => "width:190px"
-    - unless @mailing.attc_file_name.blank?
-      = f.submit t :overwrite_attachment
-    - else
-      = f.submit t :upload_attachment
+      %tt #{t :attachment}:
 
   - unless @mailing.background_info.blank?
     .caption #{t :background_info}

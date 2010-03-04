@@ -46,7 +46,7 @@ en-US:
   body: Body
   edit_asset: Edit {{value}}
   attachment: Attachment
-  with_attachment: Current attachment ({{value}}) or upload new
+  with_attachment: Current attachment {{value}} or upload new
   upload_attachment: Upload attachment
   overwrite_attachment: Overwrite attachment
   save_mailing: Save
@@ -61,3 +61,7 @@ en-US:
   contact_leads_placeholders: Contacts and leads placeholders
   accounts_placeholders: Account placeholders
   mail_needs_data: "<b>The following information is missing</b>: {{value}}"
+  mailing_created_correctly: Mailing created correctly
+  mailing_not_created_correctly: Mailing could not be created
+  mailing_updated_correctly: Mailing updated correctly
+  mailing_not_updated_correctly: Mailing not updated

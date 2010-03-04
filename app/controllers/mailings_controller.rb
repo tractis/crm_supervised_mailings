@@ -121,21 +121,13 @@ class MailingsController < ApplicationController
     @mailing = Mailing.new(params[:mailing])
     @users = User.except(@current_user).all
 
-    respond_to do |format|
-      if @mailing.save_with_permissions(params[:users])
-        if params[:mailing_related_source]
-          model = params[:mailing_related_source].singularize.camelize
-          query = session[:"#{params[:mailing_related_source]}_current_query"]
-          insert_mails(@mailing, model, query) 
-        end       
-        @mailings = get_mailings
-        format.js   # create.js.rjs
-        format.xml  { render :xml => @mailing, :status => :created, :location => @mailing }
-      else
-        format.js   # create.js.rjs
-        format.xml  { render :xml => @mailing.errors, :status => :unprocessable_entity }
-      end
-    end   
+    if @mailing.save_with_permissions(params[:users])
+      flash[:notice] = t :mailing_created_correctly      
+      redirect_to @mailing
+    else
+      flash[:error] = t :mailing_not_created_correctly
+      redirect_to mailings_path
+    end
   end
 
   # PUT /mailings/1
@@ -143,19 +135,14 @@ class MailingsController < ApplicationController
   #----------------------------------------------------------------------------
   def update
     @mailing = Mailing.my(@current_user).find(params[:id])
-    
-    respond_to do |format|
-      if @mailing.update_with_permissions(params[:mailing], params[:users])
 
-        check_mails
-        
-        format.js   # update.js.rjs
-        format.xml  { head :ok }
-      else
-        @users = User.except(@current_user).all
-        format.js   # update.js.rjs
-        format.xml  { render :xml => @mailing.errors, :status => :unprocessable_entity }
-      end
+    if @mailing.update_with_permissions(params[:mailing], params[:users])
+      check_mails
+      flash[:notice] = t :mailing_updated_correctly      
+      redirect_to @mailing
+    else
+      flash[:error] = t :mailing_not_updated_correctly      
+      redirect_to @mailing
     end
 
   rescue ActiveRecord::RecordNotFound

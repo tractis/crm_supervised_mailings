@@ -1,4 +1,4 @@
-- remote_form_for(@mailing, :html => { :onsubmit => "$('mailing_submit').disabled = true" }) do |f|
+- form_for(@mailing, :html => { :multipart => true, :onsubmit => "$('mailing_submit').disabled = true" }) do |f|
   = link_to_close new_mailing_path
   = hidden_field_tag "mailing[user_id]", @current_user.id
   = f.error_messages

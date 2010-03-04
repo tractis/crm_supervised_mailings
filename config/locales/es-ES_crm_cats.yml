@@ -46,7 +46,7 @@ es-ES:
   body: Mensaje
   edit_asset: Editar {{value}}
   attachment: Adjunto
-  with_attachment: Adjunto actual ({{value}}) o sube uno nuevo
+  with_attachment: Adjunto actual {{value}} o sube uno nuevo
   upload_attachment: Subir adjunto
   overwrite_attachment: Sobreescribir adjunto
   save_mailing: Guardar
@@ -61,3 +61,7 @@ es-ES:
   contact_leads_placeholders: Placeholders para contactos y oportunidades
   accounts_placeholders: Placeholders para cuentas
   mail_needs_data: "<b>Falta la información siguiente</b>: {{value}}"
+  mailing_created_correctly: Mailing creado con éxito
+  mailing_not_created_correctly: No se pudo crear el mailing
+  mailing_updated_correctly: Mailing actualizado con éxito
+  mailing_not_updated_correctly: No se pudo actualizar el mailing
