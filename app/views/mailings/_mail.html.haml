@@ -13,14 +13,7 @@
       %tr
         %td{ :valign => :top, :colspan => 3 }
           .label.req #{t :body}:
-          = f.text_area :body, :style =>"width:480px", :rows => 12 
-      %tr
-        %td{ :valign => :top, :colspan => 3 }
-          - unless @mailing.attc_file_name.blank?
-            .label #{t(:with_attachment, link_to(@mailing.attc_file_name, attachment_mailing_path(@mailing)))}
-          - else  
-            .label #{t :attachment}:
-          = f.file_field :attc           
+          = f.text_area :body, :style =>"width:480px", :rows => 12           
       %tr
         %td{ :valign => :top, :colspan => 3 }
           .label.top.req #{t :general_placeholders}:

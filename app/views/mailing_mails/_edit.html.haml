@@ -33,7 +33,13 @@
           %tr
             %td{ :valign => :top, :colspan => 3 }
               .label.req #{t :body}:
-              = f.text_area :body, :style =>"width:480px", :rows => 10
+              = f.text_area :body, :style =>"width:480px", :rows => 10                        
+          %tr
+            %td{ :valign => :top, :colspan => 3 }
+              - unless @mailing.attc_file_name.blank?       
+                .label #{t(:with_attachment_show, link_to(@mailing.attc_file_name, attachment_mailing_path(@mailing)))}
+              - else  
+                .label #{t :without_attachment}     
               
       .buttonbar
         = f.submit t(:send)

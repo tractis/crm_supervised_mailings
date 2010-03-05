@@ -1,0 +1,15 @@
+- edit ||= false
+- collapsed = session[:mailing_attachment].nil?
+= subtitle :mailing_attachment, collapsed, t(:attachment)
+.section
+  %small#mailing_attachment_intro{ hidden_if(!collapsed) }
+    = t(:mailing_attachment_intro) unless edit
+  #mailing_attachment{ hidden_if(collapsed) }
+    %table{ :width => 500, :cellpadding => 0, :cellspacing => 0 }    
+      %tr
+        %td{ :valign => :top, :colspan => 3 }
+          - unless @mailing.attc_file_name.blank?
+            .label #{t(:with_attachment, link_to(@mailing.attc_file_name, attachment_mailing_path(@mailing)))}
+          - else  
+            .label #{t :attachment}:
+          = f.file_field :attc 

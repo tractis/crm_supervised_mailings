@@ -7,9 +7,11 @@
     %li
       %dt#mailing_attachment= link_to truncate(@mailing.attc_file_name, 20, "..."), attachment_mailing_path(@mailing)
       %tt #{t :attachment}:
+  
+  .caption #{t :find_mails}
   %li
     %dt#mailing_stats= @mails_stats[:sent]
-    %tt #{t :sent}:
+    %tt #{t :allready_sent}:
   %li
     %dt#mailing_stats= @mails_stats[:ready]
     %tt #{t :ready}:

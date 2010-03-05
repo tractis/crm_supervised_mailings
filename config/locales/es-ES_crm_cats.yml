@@ -49,6 +49,8 @@ es-ES:
   edit_asset: Editar {{value}}
   attachment: Adjunto
   with_attachment: Adjunto actual {{value}} o sube uno nuevo
+  with_attachment_show: "Adjunto: {{value}}"
+  without_attachment: Sin adjunto
   upload_attachment: Subir adjunto
   overwrite_attachment: Sobreescribir adjunto
   save_mailing: Guardar
@@ -67,8 +69,11 @@ es-ES:
   mailing_not_created_correctly: No se pudo crear el mailing
   mailing_updated_correctly: Mailing actualizado con éxito
   mailing_not_updated_correctly: No se pudo actualizar el mailing
-  ready: Listos para enviar
-  needs_data: Actualización de datos necesaria
+  allready_sent: Ya envíados
+  ready: Pendientes de envío
+  needs_data: Requieren actualizar datos
   total_mails: "<b>Total</b>"
   contact_email: "Email de contacto: {{value}}"
   mail_to: Email a {{value}}
+  find_mails: Buscar emails
+  mailing_attachment_intro: Permite adjuntar un fichero adjunto al mail

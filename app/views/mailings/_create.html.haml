@@ -5,6 +5,7 @@
   
   = render :partial => "mailings/top_section",   :locals => { :f => f }
   = render :partial => "mailings/mail"       ,   :locals => { :f => f }
+  = render :partial => "mailings/attachment" ,   :locals => { :f => f }
   = render :partial => "mailings/permissions",   :locals => { :f => f }  
   .buttonbar
     = f.submit t(:create_mailing)

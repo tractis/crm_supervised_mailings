@@ -49,6 +49,8 @@ en-US:
   edit_asset: Edit {{value}}
   attachment: Attachment
   with_attachment: Current attachment {{value}} or upload new
+  with_attachment_show: "Attachment: {{value}}"
+  without_attachment: Without attachment
   upload_attachment: Upload attachment
   overwrite_attachment: Overwrite attachment
   save_mailing: Save
@@ -67,8 +69,11 @@ en-US:
   mailing_not_created_correctly: Mailing could not be created
   mailing_updated_correctly: Mailing updated correctly
   mailing_not_updated_correctly: Mailing not updated
-  ready: Ready to be sent
-  needs_data: Needs data corrections
+  allready_sent: Already sent
+  ready: Pending
+  needs_data: Information update required
   total_mails: "<b>Total</b>"
   contact_email: "Email contact: {{value}}"
   mail_to: Email to {{value}}
+  find_mails: Find emails
+  mailing_attachment_intro: You can attach a file to the mail

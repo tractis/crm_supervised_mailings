@@ -5,6 +5,7 @@
     = f.error_messages
     = render :partial => "mailings/top_section",   :locals => { :f => f, :edit => true } 
     = render :partial => "mailings/mail"       ,   :locals => { :f => f, :edit => true }
+    = render :partial => "mailings/attachment" ,   :locals => { :f => f, :edit => true }
     = render :partial => "mailings/permissions",   :locals => { :f => f, :edit => true }      
     .buttonbar
       = f.submit t(:save_mailing)
