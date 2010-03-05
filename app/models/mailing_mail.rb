@@ -6,6 +6,8 @@ class MailingMail < ActiveRecord::Base
   acts_as_paranoid
   sortable :by => [ "status ASC", "created_at DESC", "updated_at DESC" ], :default => "status ASC"
   
+  validates_uniqueness_of :mailing_id, :scope => [:mailable_id, :mailable_type]
+  
   def self.statuses
     ["new", "sent"]
   end
