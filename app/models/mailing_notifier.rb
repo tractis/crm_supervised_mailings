@@ -1,7 +1,12 @@
 class MailingNotifier < ActionMailer::Base
   
-  def simple(user, mail, mailing, subject, body)
-    recipients mail.mailable.email
+  def simple(user, mail, mailing, subject, body, mail_recipients)
+    if mail_recipients && !mail_recipients.empty?
+      recipients mail_recipients
+    else
+      recipients mail.mailable.email
+    end
+    
     from       user.email
     bcc        user.email
     subject    subject

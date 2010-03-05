@@ -49,15 +49,17 @@ class Mailing < ActiveRecord::Base
   named_scope :filter_by_status, lambda { |status| { :conditions => [ "status = ?", status ] } }
   
   #----------------------------------------------------------------------------
-  def self.check_and_update_mail_placeholders(mail, mailing, back = false)
+  def self.check_and_update_mail_placeholders(mail, mailing, back = false, recipients = nil)
     # Generate the list of placeholders for the mail source, wihtout mail because this is checked manually and not depends on mailing text
     placeholders = self.get_placeholders
 
     # Detects placeholders on subject and body to check against the mail asset
     missing_placeholders = ""
 
-    # Check email globally manually
-    missing_placeholders += "(email) " if mail.mailable.email.blank?
+    # Check email globally manually for not recipients in accounts
+    if !recipients || recipients.empty?
+      missing_placeholders += "(email) " if mail.mailable.email.blank?
+    end
     
     if back == true
       subject = mailing.subject

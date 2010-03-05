@@ -8,6 +8,7 @@ class CreateMailingMails < ActiveRecord::Migration
       t.references :user
       t.boolean    :needs_update, :null => false, :default => false
       t.string     :needs_update_help
+      t.string     :recipients
       
       t.references :mailable, :polymorphic => true
 

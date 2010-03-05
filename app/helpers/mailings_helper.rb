@@ -18,6 +18,11 @@ module MailingsHelper
   def get_asset_link(asset)
     link_to "#{asset.name} - #{asset.email}", asset
   end
+
+  #----------------------------------------------------------------------------
+  def get_asset_link_name(asset)
+    link_to "#{asset.name}", asset
+  end    
   
   #----------------------------------------------------------------------------
   def link_to_mail_confirm(mailing_mail)

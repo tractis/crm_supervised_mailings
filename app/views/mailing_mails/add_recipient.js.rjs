@@ -1,0 +1,2 @@
+page.remove "add_email_recipient"
+page.insert_html :bottom, "recipients", :partial => "account_recipients"

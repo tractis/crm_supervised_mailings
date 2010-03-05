@@ -10,6 +10,8 @@ class MailingMailsController < ApplicationController
     # Check and transform Transform data from source
     @mailing_mail = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true)
     
+    @mailing_mail.mailable.email.blank? ? @recipient_number = 0 : @recipient_number = 1
+    
     @users = User.except(@current_user).all
 
     if params[:previous] =~ /(\d+)\z/
@@ -32,21 +34,36 @@ class MailingMailsController < ApplicationController
     @mailing_sim.subject = params[:mailing_mail][:subject]
     @mailing_sim.body = params[:mailing_mail][:body]
     
-    # Check email for missing placeholders or email
-    @mailing_mail = Mailing.check_and_update_mail_placeholders(@mailing_mail, @mailing_sim, true)
+    # Check recipients for accounts
+    @recipients = []
+    if @mailing_mail.mailable_type == "Account"      
+      params[:recipients].each do |id, email|
+        @recipients << email unless email.empty? || @recipients.include?(email)
+      end
+      @mailing_mail = Mailing.check_and_update_mail_placeholders(@mailing_mail, @mailing_sim, true, @recipients)
+    else
+      # Normal check email for missing placeholders or email
+      @mailing_mail = Mailing.check_and_update_mail_placeholders(@mailing_mail, @mailing_sim, true)    
+    end
     
     if @mailing_mail.needs_update == false
       # Sending email
-#      begin
-        new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]))
+      begin
+        new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]), @recipients)
         MailingNotifier.deliver(new_email)
-        
-        # Making a comment on asset
-        Comment.create(:title => "mailing_id_#{@mailing.id}", :user => @current_user, :commentable => @mailing_mail.mailable, :comment => "#{params[:mailing_mail][:subject]}\n\n#{params[:mailing_mail][:body]}")    
-    
-        # Now saving with status sent and sent_at date
+
+        # Now saving with status sent, sent_at date and recipients
         params[:mailing_mail][:status] = "sent"
         params[:mailing_mail][:sent_at] = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+        
+        if @recipients.empty?
+          params[:mailing_mail][:recipients] = @mailing_mail.mailable.email
+        else
+          params[:mailing_mail][:recipients] = @recipients.join(", ")
+        end        
+        
+        # Making a comment on asset
+        Comment.create(:title => "mailing_id_#{@mailing.id}", :user => @current_user, :commentable => @mailing_mail.mailable, :comment => "#{t(:mail_to, params[:mailing_mail][:recipients])}\n#{t :subject}: #{params[:mailing_mail][:subject]}\n\n#{params[:mailing_mail][:body]}")    
         
         respond_to do |format|
           if @mailing_mail.update_attributes(params[:mailing_mail])            
@@ -64,14 +81,14 @@ class MailingMailsController < ApplicationController
             format.xml  { render :xml => @mailing_mail.errors, :status => :unprocessable_entity }
           end
         end
-#      rescue
-#        # Error sending email
-#        flash[:error] = t :error_sendig_mail
-#        #redirect_to(mailings_path)
-#        render :update do |page| 
-#          page.redirect_to(@mailing)
-#        end
-#      end
+      rescue
+        # Error sending email
+        flash[:error] = t :error_sendig_mail
+        #redirect_to(mailings_path)
+        render :update do |page| 
+          page.redirect_to(@mailing)
+        end
+      end
     else
       # Mail has placeholders, return to edit updated
       @users = User.except(@current_user).all      
@@ -88,6 +105,17 @@ class MailingMailsController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml)
+  end
+  
+  # GET /mailing_mails/1/add_recipient                                       AJAX
+  #----------------------------------------------------------------------------
+  def add_recipient
+    @mailing_mail = MailingMail.find(params[:id])
+    
+    @recipient_number = params[:related].to_i + 1
+    
+  rescue ActiveRecord::RecordNotFound
+    respond_to_not_found(:js, :xml)    
   end
 
   # DELETE /mailing_mails/1

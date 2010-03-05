@@ -8,6 +8,7 @@ en-US:
   mailings_small: mailings
   create_mailing: Create mailing
   mailings: Mailings
+  mailing: Mailing
   mails: mails
   add_mailing_mails: Add the {{value}} listed
   add_mails_from: Add emails from {{value}}
@@ -38,8 +39,9 @@ en-US:
   mails_options: Options for mails list
   how_to_add_emails: You can add mails from the accounts, contact and leads pages
   send: Send
-  mailing_sent: "<b>{{models}}</b>: {{link}} - sent {{time_ago}} ago by {{user}}"
+  mailing_sent: "<b>{{models}}</b>: {{link}} - sent to {{to}} {{time_ago}} ago by {{user}}"
   mail_participants: <b>From:</b> {{from}} <b>to:</b> {{to}}
+  mail_participants_accounts: <b>From:</b> {{from}} <b>to:</b>
   profile_needs_update: Your email credentials are not set, please {{link}} your profile first
   no_mails_to_send: No mails to send
   subject: Subject
@@ -67,4 +69,6 @@ en-US:
   mailing_not_updated_correctly: Mailing not updated
   ready: Ready to be sent
   needs_data: Needs data corrections
-  total_mails: "<b>Total</b>"  
+  total_mails: "<b>Total</b>"
+  contact_email: "Email contact: {{value}}"
+  mail_to: Email to {{value}}

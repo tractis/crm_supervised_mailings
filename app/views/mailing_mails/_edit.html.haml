@@ -12,7 +12,6 @@
       = f.hidden_field :user_id
       = hidden_field_tag :next_mail
       = f.error_messages
-  
       #mailing_mail
         %table{ :width => 500, :cellpadding => 0, :cellspacing => 0 }
           %tr
@@ -22,7 +21,11 @@
                 = t(:mail_needs_data, @mailing_mail.needs_update_help)
                 %br
                 = t(:mail_status_ko_info)
-              .label= t(:mail_participants, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
+              - if @mailing_mail.mailable.class.to_s == "Account"
+                .label= t(:mail_participants_accounts, :from => @current_user.pref[:google_account])
+                #recipients= render :partial => "account_recipients"
+              - else
+                .label= t(:mail_participants, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
           %tr
             %td{ :valign => :top, :colspan => 3 }
               .label.req #{t :subject}:
