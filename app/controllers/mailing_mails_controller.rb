@@ -91,7 +91,8 @@ class MailingMailsController < ApplicationController
       end
     else
       # Mail has placeholders, return to edit updated
-      @users = User.except(@current_user).all      
+      @users = User.except(@current_user).all    
+      @mailing_mail.mailable.email.blank? ? @recipient_number = 0 : @recipient_number = 1
       render :action => "edit"
     end
   rescue ActiveRecord::RecordNotFound
@@ -102,6 +103,7 @@ class MailingMailsController < ApplicationController
   #----------------------------------------------------------------------------
   def confirm
     @mailing_mail = MailingMail.find(params[:id])
+    @mailing = Mailing.find(@mailing_mail.mailing_id)
 
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml)
@@ -124,7 +126,8 @@ class MailingMailsController < ApplicationController
   def destroy
     @mailing_mail = MailingMail.find(params[:id])
     @mailing_mail.destroy if @mailing_mail
-
+    @mailing = Mailing.find(@mailing_mail.mailing_id)
+    
     respond_to do |format|
       format.html { respond_to_destroy(:html) }
       format.js   { respond_to_destroy(:ajax) }
