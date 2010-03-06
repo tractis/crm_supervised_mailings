@@ -5,15 +5,11 @@
 
   - current_sort_by = t("option_" + MailingMail.sort_by_map.invert[@sort_by_mails])
   - current_naming  = t("option_#{@naming}")
-  - current_filter  = t("option_#{@filter_mails}")
 
   -# sort_by: Sort {{models}} by {{field}}.
   = t(:sort_by, :models => t(:mails), :field => link_to(current_sort_by, "#", :id => :sort_by))
-
-  -# Mostrando los emails {{filter}}.
-  = t(:mailing_mails_show_filter, :filter => link_to(current_filter, "#", :id => :filter_mails))
+  
 %p
 
 %script
   = render :partial => "mailings/sort_by_mails"
-  = render :partial => "mailings/filter_mails"

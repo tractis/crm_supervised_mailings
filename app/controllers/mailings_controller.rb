@@ -198,7 +198,6 @@ class MailingsController < ApplicationController
     unless params[:cancel].true?
       @per_page_mails = @current_user.pref[:mailings_mail_per_page] || MailingMail.per_page
       @sort_by_mails  = @current_user.pref[:mailings_mail_sort_by]  || MailingMail.sort_by
-      @filter_mails   = @current_user.pref[:mailings_mail_filter]   || MailingMail.filter
     end
   end
 
@@ -219,7 +218,6 @@ class MailingsController < ApplicationController
     @users = User.except(@current_user).all      
     
     @current_user.pref[:mailing_mails_sort_by]  = MailingMail::sort_by_map[params[:sort_by]] if params[:sort_by]
-    @current_user.pref[:mailing_mails_filter]   = params[:filter_mails] if params[:filter_mails]
     
     render :update do |page| 
       page.redirect_to(@mailing)
