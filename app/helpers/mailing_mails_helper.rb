@@ -44,5 +44,12 @@ module MailingMailsHelper
   def one_submit_only_and_next_mail(form)
     { :onsubmit => "$('next_mail').value = crm.get_next_mail(); $('#{form}_submit').disabled = true;" }
   end
+
+  # Sidebar checkbox control for filtering mails by status.
+  #----------------------------------------------------------------------------
+  def mailing_mails_status_checkbox(status, count)
+    checked = (session[:filter_by_mailing_mail_status] ? session[:filter_by_mailing_mail_status].split(",").include?(status.to_s) : count.to_i > 0)
+    check_box_tag("status[]", status, checked, :onclick => remote_function(:url => filter_mailing_path(@mailing), :with => %Q/"status=" + $$("input[name='status[]']").findAll(function (el) { return el.checked }).pluck("value")/))
+  end   
   
 end

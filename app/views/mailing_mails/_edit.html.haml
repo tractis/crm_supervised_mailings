@@ -1,7 +1,6 @@
-- @mailing_mail.needs_update == true ? remote_class = "remote_needs_data" : remote_class = "remote"
-%div{ :class => remote_class }
-        
-  - unless google_account_is_defined
+- @mailing_mail.status == "needs_update" ? remote_class = "remote_needs_data" : remote_class = "remote"
+%div{ :class => remote_class }     
+  - if @current_user.email.blank?
     = link_to_close edit_mailing_mail_path(@mailing_mail)
 
     #mailing_mail    
@@ -17,8 +16,8 @@
           %tr
             %td{ :valign => :top, :colspan => 3 }
               %br
-              - if @mailing_mail.needs_update == true
-                = t(:mail_needs_data, @mailing_mail.needs_update_help)
+              - if @mailing_mail.status == "needs_update"
+                = t(:mail_needs_data, @mailing_mail.needs_data_info)
                 %br
                 = t(:mail_status_ko_info)
               - if @mailing_mail.mailable.class.to_s == "Account"

@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------
 crm.get_next_mail = function(){
-  mails = document.getElementsByName("new");
+  mails = document.getElementsByName("pending");
   if (mails.length<2)
   {
     return 0;

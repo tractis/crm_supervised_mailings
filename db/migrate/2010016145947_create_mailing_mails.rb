@@ -2,12 +2,11 @@ class CreateMailingMails < ActiveRecord::Migration
   def self.up
     create_table :mailing_mails do |t|
       t.integer    :mailing_id
-      t.string     :status, :default => "new"
+      t.string     :status, :default => "needs_update"
       t.string     :subject
       t.text       :body 
       t.references :user
-      t.boolean    :needs_update, :null => false, :default => false
-      t.string     :needs_update_help
+      t.string     :needs_data_info
       t.string     :recipients
       
       t.references :mailable, :polymorphic => true

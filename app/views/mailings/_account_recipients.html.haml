@@ -1,0 +1,3 @@
+= select_tag "recipients[#{@recipient_number}]", options_for_select(@mailing_mail.mailable.contacts.map { |c| ["#{c.name} - #{c.email}", c.email] }.insert(0, '').insert(0, ["#{t(:contact_email, @mailing_mail.mailable.name)} - #{@mailing_mail.mailable.email}", @mailing_mail.mailable.email])), { :style => "width:430px" }
+= link_to_remote(t(:add), {:url => add_recipient_mailing_mail_path(@mailing_mail), :method => :get, :with  => "{ cancel: Element.visible('#{:recipients}'), related: '#{@recipient_number}' }"}, {:id => "add_email_recipient"})
+%br

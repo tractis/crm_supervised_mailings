@@ -9,20 +9,16 @@
       %tt #{t :attachment}:
   
   .caption #{t :find_mails}
-  %li
-    %dt#mailing_stats= @mails_stats[:sent]
-    %tt #{t :allready_sent}:
-  %li
-    %dt#mailing_stats= @mails_stats[:ready]
-    %tt #{t :ready}:
-  %li
-    %dt#mailing_stats= @mails_stats[:needs_data]
-    %tt #{t :needs_data}:
-  %li
-    %dt#mailing_stats= @mails_stats_total
-    %tt #{t :total_mails}:    
+  - MailingMail.statuses.each do |key|
+    %li
+      %dt#mailing_status= @mails_stats_total[key]
+      %tt= mailing_mails_status_checkbox(key, @mails_stats_total[key]) << " " << t(key)
+
+  .check_box
+    %div{:style => "float:right;"}
+      %b= @mails_stats_total[:all]
+    %b #{t :total_mails}
         
   - unless @mailing.background_info.blank?
     .caption #{t :background_info}
-    = auto_link(simple_format h(@mailing.background_info))
-
+    = auto_link(simple_format h(@mailing.background_info)) 

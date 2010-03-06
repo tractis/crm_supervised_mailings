@@ -22,7 +22,7 @@ else # <----------------------------------------  Show [Edit mailing_mail] form.
     page.call "crm.flip_form", :edit_mailing_mail
   end
   
-  unless @current_user.pref[:google_account].blank? || @current_user.pref[:google_password].blank?  
+  unless @current_user.email.blank?  
     page[:mailing_mail_submit].focus
   end
 

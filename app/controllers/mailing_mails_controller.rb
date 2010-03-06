@@ -1,6 +1,5 @@
 class MailingMailsController < ApplicationController
   before_filter :require_user
-  before_filter :get_data_for_sidebar, :only => :update
 
   # GET /mailing_mails/1/edit                                                      AJAX
   #----------------------------------------------------------------------------
@@ -46,7 +45,7 @@ class MailingMailsController < ApplicationController
       @mailing_mail = Mailing.check_and_update_mail_placeholders(@mailing_mail, @mailing_sim, true)    
     end
     
-    if @mailing_mail.needs_update == false
+    if @mailing_mail.status == "ready"
       # Sending email
       begin
         new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]), @recipients)
@@ -70,8 +69,10 @@ class MailingMailsController < ApplicationController
             unless params[:next_mail].blank? || params[:next_mail] == "0"
               @mail = MailingMail.find(params[:next_mail].to_i)
               # Check and transform Transform data from source
-              @mailing_mail_next = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true)               
+              @mailing_mail_next = Mailing.check_and_update_mail_placeholders(@mail, @mailing, true) 
+              @mailing_mail_next.mailable.email.blank? ? @recipient_number = 0 : @recipient_number = 1
             end
+
             get_data_for_sidebar
             
             format.js   # update.js.rjs
@@ -161,23 +162,14 @@ private
   end 
 
   #----------------------------------------------------------------------------
-  def get_data_for_sidebar_before()
-    @mails_stats_total = 0
-    @mails_stats = {}
-    @mails_stats[:sent] = 0
-    @mails_stats[:ready] = 0
-    @mails_stats[:needs_data] = 0
-  end
-  #----------------------------------------------------------------------------
   def get_data_for_sidebar()
-    @mailing_mail_for_sidebar = MailingMail.find(params[:id])
+    mail = MailingMail.find(params[:id])
     
-    @mails_stats_total = MailingMail.count(:conditions => [ "mailing_id=?", @mailing_mail_for_sidebar.mailing_id ])
+    @mails_stats_total = { :all => MailingMail.count(:conditions => [ "mailing_id=?", mail.mailing_id ]) }    
     
-    @mails_stats = {}
-    @mails_stats[:sent] = MailingMail.count(:conditions => [ "mailing_id=? and status=?", @mailing_mail_for_sidebar.mailing_id, "sent" ])
-    @mails_stats[:ready] = MailingMail.count(:conditions => [ "mailing_id=? and status=? and needs_update=?", @mailing_mail_for_sidebar.mailing_id, "new", false ])
-    @mails_stats[:needs_data] = MailingMail.count(:conditions => [ "mailing_id=? and status=? and needs_update=?", @mailing_mail_for_sidebar.mailing_id, "new", true ])
-  end  
+    MailingMail.statuses.each do |key|
+      @mails_stats_total[key] = MailingMail.count(:conditions => [ "mailing_id=? and status=?", mail.mailing_id, key.to_s ])      
+    end   
+  end 
   
 end

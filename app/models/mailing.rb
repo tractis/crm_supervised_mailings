@@ -81,15 +81,15 @@ class Mailing < ActiveRecord::Base
         end
       end
     end
-      
+ 
     # Mark mails as need_update
-    if missing_placeholders.empty? && mail.needs_update == true
-      mail.needs_update = false
-      mail.needs_update_help = ""
+    if missing_placeholders.empty? && mail.status == "needs_update"
+      mail.status = "ready"
+      mail.needs_data_info = ""
       mail.save      
     elsif !missing_placeholders.empty?
-      mail.needs_update = true
-      mail.needs_update_help = missing_placeholders
+      mail.status = "needs_update"
+      mail.needs_data_info = missing_placeholders
       mail.save
     end
     

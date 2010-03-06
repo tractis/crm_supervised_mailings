@@ -1,12 +1,13 @@
 - type = mail.mailable_type.to_s.downcase
-- status_text = "<font color='red'>#{t(:mail_status)}</font>: #{t(:mail_status_ko)}: #{mail.needs_update_help}. #{t(:mail_status_ko_info)}" if mail.needs_update == true
-- status_text = "<font color='green'>#{t(:mail_status)}</font>: #{t(:mail_status_ok)}" if mail.needs_update == false
-%li[mail]{ mails_highlightable(dom_id(mail, :tools), {}, mail.status) }
+- status_text = "<font color='red'>#{t(:mail_status)}</font>: #{t(:mail_status_ko)}: #{mail.needs_data_info}. #{t(:mail_status_ko_info)}" if mail.status == "needs_update"
+- status_text = "<font color='green'>#{t(:mail_status)}</font>: #{t(:mail_status_ok)}" if mail.status == "ready"
+- mail.status == "sent" ? class_name = "sent" : class_name = "pending"
+%li[mail]{ mails_highlightable(dom_id(mail, :tools), {}, class_name) }
   
-  - if mail.status == "new"
-    .strip{:style => "background:bisque;"} #{t(mail.status)}
-  - else
+  - if mail.status == "sent"
     .strip{:style => "background:palegreen;"} #{t(mail.status)}
+  - else
+    .strip{:style => "background:bisque;"} #{t :new}
   
   .tools{ invisible, :id => dom_id(mail, :tools) }
     - unless mail.status == "sent"	
@@ -19,8 +20,8 @@
     - else
       = t(:mailing_from, :models => t(type), :link => get_asset_link(mail.mailable))
     %tt
-      - if mail.status == "new"
+      - unless mail.status == "sent"
         = " - " << t(:added_by, :time_ago => time_ago_in_words(mail.created_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
     %dt{ :style => "padding: 2px 0px 0px 0px" }
-    - if mail.status == "new"
+    - unless mail.status == "sent"
       = status_text
