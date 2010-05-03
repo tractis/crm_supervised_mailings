@@ -3,7 +3,11 @@ class Mailing < ActiveRecord::Base
   belongs_to  :user
   has_attached_file :attc, :url  => "/mailings/:id/attachment", :path => ":rails_root/files/supervised_mailings/attachments/:id/:filename"
   
-  simple_column_search :name, :match => :middle, :escape => lambda { |query| query.gsub(/[^\w\s\-\.']/, "").strip }
+  acts_as_criteria :i18n                 => lambda { |text| I18n.t(text) },
+                 :mantain_current_query  => lambda { |query, controller_name, session| session["#{controller_name}_current_query".to_sym] = query },
+                 :restrict => { :method  => "my", :options => lambda { |current_user| { :user => current_user, :order => current_user.pref[:accounts_sort_by] || Account.sort_by } } },
+                 :paginate => { :method  => "paginate", :options => lambda { |current_user| { :page => 1, :per_page => current_user.pref[:accounts_per_page]} } },
+                 :simple   => { :columns => [:name], :match => :contains, :escape => lambda { |query| query.gsub(/[^\w\s\-\.']/, "").strip } }
   uses_user_permissions
   acts_as_paranoid
   #sortable :by => [ "name ASC", "created_at DESC", "updated_at DESC" ], :default => "status DESC, mailings.created_at DESC"

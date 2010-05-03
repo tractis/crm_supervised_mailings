@@ -10,6 +10,7 @@ Dispatcher.to_prepare do
   Account.send(:include, AccountMailingMailAssociations)
   Contact.send(:include, ContactMailingMailAssociations)
   Lead.send(:include, LeadMailingMailAssociations)
+  Opportunity.send(:include, OpportunityMailingMailAssociations)
   
   # Make issues observable.
   ActivityObserver.instance.send :add_observer!, Mailing

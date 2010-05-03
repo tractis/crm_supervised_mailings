@@ -110,7 +110,7 @@ create_or_select_mailing(1);
 EOS
 
   #----------------------------------------------------------------------------
-  [ :account, :contact, :lead ].each do |model|
+  [ :account, :contact, :lead, :opportunity ].each do |model|
 
     define_method :"index_#{model}_sidebar_bottom" do |view, context|
       Haml::Engine.new(ACTIONS_FOR_SHOW).render(view, :model => context[model])
