@@ -30,6 +30,13 @@ module CrmSupervisedMailings
       
       items = self.send("get_#{self.controller_name.to_s}")      
       items.each do |item|
+        if self.controller_name.to_s == "opportunities"
+          unless item.account.blank?
+            item = item.account
+          else
+            next
+          end
+        end
         mail = MailingMail.create(:mailing_id => mailing.id, :user => @current_user, :mailable => item)
         # if adding to an existing mail, check the mail placeholders
         unless params[:mailing][:id].nil?

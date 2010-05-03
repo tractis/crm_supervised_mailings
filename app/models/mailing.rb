@@ -72,7 +72,7 @@ class Mailing < ActiveRecord::Base
     
     ["subject", "body"].each do |field|
       placeholders.each do |ph|
-        if mailing.send(field.to_sym).include? Mailing.show_ph(ph)
+        if !mailing.send(field.to_sym).blank? && mailing.send(field.to_sym).include?(Mailing.show_ph(ph))
           # Check if placeholder exists in model
           if mail.mailable.respond_to?(ph.to_sym)
             missing_placeholders += "(#{field}-#{ph}) " if mail.mailable.send(ph.to_sym).blank?
