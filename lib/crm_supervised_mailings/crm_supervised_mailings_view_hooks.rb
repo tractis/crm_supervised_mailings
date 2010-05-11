@@ -11,7 +11,7 @@ class CrmSupervisedMailingsViewHooks < FatFreeCRM::Callback::Base
     = "<a href='#' onclick='create_mailing(1); return false;'>" << t(:create_new) << "</a> " << t(:or) << " " << t(:select_existing) << ":"
   %span#mailing_disabled_title :
     
-= form_tag :action => "add_to_mailing", :method => 'post', :name => "add_to_mailing" do
+- form_tag :action => "add_to_mailing" do
   = collection_select :mailing, :id, Mailing.my(@current_user).open, :id, :name, {}, { :style => "width:170px; display:none;" }
   = text_field(:mailing, :name, :style => "width:170px; display:none;")
   :javascript
