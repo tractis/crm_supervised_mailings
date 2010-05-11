@@ -11,42 +11,42 @@ class CrmSupervisedMailingsViewHooks < FatFreeCRM::Callback::Base
     = "<a href='#' onclick='create_mailing(1); return false;'>" << t(:create_new) << "</a> " << t(:or) << " " << t(:select_existing) << ":"
   %span#mailing_disabled_title :
     
-= form_tag :action => "add_to_mailing"
-= collection_select :mailing, :id, Mailing.my(@current_user).open, :id, :name, {}, { :style => "width:170px; display:none;" }
-= text_field(:mailing, :name, :style => "width:170px; display:none;")
-:javascript
-  // Hide mailing dropdown and show create new mailing edit field instead.
-  //----------------------------------------------------------------------------
-  create_mailing = function(and_focus) {
-    $("mailing_disabled_title").hide();
-    $("mailing_select_title").hide();
-    $("mailing_create_title").show();
-    $("mailing_id").hide();
-    $("mailing_id").disable();
-    $("mailing_name").enable();
-    $("mailing_name").clear();
-    $("mailing_name").show();
-    if (and_focus) {
-      $("mailing_name").focus();
+= form_tag :action => "add_to_mailing", :method => 'post', :name => "add_to_mailing" do
+  = collection_select :mailing, :id, Mailing.my(@current_user).open, :id, :name, {}, { :style => "width:170px; display:none;" }
+  = text_field(:mailing, :name, :style => "width:170px; display:none;")
+  :javascript
+    // Hide mailing dropdown and show create new mailing edit field instead.
+    //----------------------------------------------------------------------------
+    create_mailing = function(and_focus) {
+      $("mailing_disabled_title").hide();
+      $("mailing_select_title").hide();
+      $("mailing_create_title").show();
+      $("mailing_id").hide();
+      $("mailing_id").disable();
+      $("mailing_name").enable();
+      $("mailing_name").clear();
+      $("mailing_name").show();
+      if (and_focus) {
+        $("mailing_name").focus();
+      }
     }
-  }
-  
-  // Hide create mailing edit field and show mailings dropdown instead.
-  //----------------------------------------------------------------------------
-  select_mailing = function(and_focus) {
-    $("mailing_disabled_title").hide();
-    $("mailing_create_title").hide();
-    $("mailing_select_title").show();
-    $("mailing_name").hide();
-    $("mailing_name").disable();
-    $("mailing_id").enable();
-    $("mailing_id").show();
-    if (and_focus) {
-      $("mailing_id").focus();
+
+    // Hide create mailing edit field and show mailings dropdown instead.
+    //----------------------------------------------------------------------------
+    select_mailing = function(and_focus) {
+      $("mailing_disabled_title").hide();
+      $("mailing_create_title").hide();
+      $("mailing_select_title").show();
+      $("mailing_name").hide();
+      $("mailing_name").disable();
+      $("mailing_id").enable();
+      $("mailing_id").show();
+      if (and_focus) {
+        $("mailing_id").focus();
+      }
     }
-  }
-  create_mailing(1);
-= submit_tag t(:add)
+    create_mailing(1);
+  = submit_tag t(:add)
 EOS
 
   SM_JAVASCRIPT = <<EOS
