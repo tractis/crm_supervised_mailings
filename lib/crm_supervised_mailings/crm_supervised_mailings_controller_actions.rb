@@ -28,7 +28,7 @@ module CrmSupervisedMailings
         end
       end
       
-      items = self.send("get_#{self.controller_name.to_s}")      
+      items = self.send("get_#{self.controller_name.to_s}", :page => 1, :per_page => 999999)
       items.each do |item|
         if self.controller_name.to_s == "opportunities"
           unless item.account.blank?
