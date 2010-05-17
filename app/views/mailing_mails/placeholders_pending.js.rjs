@@ -1,0 +1,3 @@
+page.replace_html "mailing_mail_info", :text => t(:missing_placeholders)
+page << "$('mailing_mail_submit').disabled = false"
+page.show "mailing_mail_submit"

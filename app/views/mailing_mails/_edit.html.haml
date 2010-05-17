@@ -21,10 +21,16 @@
                 %br
                 = t(:mail_status_ko_info)
               - if @mailing_mail.mailable.class.to_s == "Account"
-                .label= t(:mail_participants_accounts, :from => @current_user.pref[:google_account])
+                %br 
+                = t(:mail_from) << ":"
+                = render :partial => "user_selection"
                 #recipients= render :partial => "account_recipients"
               - else
-                .label= t(:mail_participants, :to => @mailing_mail.mailable.email, :from => @current_user.pref[:google_account])
+                %br
+                = t(:mail_from) << ":"
+                = render :partial => "user_selection"
+                = t(:to) << ":"
+                = @mailing_mail.mailable.email
           %tr
             %td{ :valign => :top, :colspan => 3 }
               .label.req #{t :subject}:
@@ -40,6 +46,7 @@
               - else  
                 .label #{t :without_attachment}     
               
+      #mailing_mail_info
       .buttonbar
         = f.submit t(:send)
         #{t :or}

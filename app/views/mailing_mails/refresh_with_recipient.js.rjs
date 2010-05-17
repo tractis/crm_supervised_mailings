@@ -1,0 +1,2 @@
+page << "$('mailing_mail_subject').value = '#{@new_source.subject}'"
+page << "$('mailing_mail_body').value = '#{@new_source.body.gsub("\r\n","\\n").gsub("'", "")}'"

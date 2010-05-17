@@ -1,2 +1,5 @@
 page.remove "add_email_recipient"
+if @recipient_number == 2
+  page.insert_html :after, 'recipients_1', :text => "<br> Se utilizarán los datos del primer contacto para personalizar las variables del Mensaje"
+end
 page.insert_html :bottom, "recipients", :partial => "account_recipients"

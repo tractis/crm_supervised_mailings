@@ -17,6 +17,8 @@
   .indent
     - if mail.status == "sent"
       = t(:mailing_sent, :models => t(type), :link => get_asset_link_name(mail.mailable), :to => auto_link(mail.recipients),:time_ago => time_ago_in_words(mail.sent_at), :user => (mail.user.id == @current_user.id ? t(:me) : h(mail.user.full_name)))
+      - if mail.user.email != mail.sent_by_email
+        = t(:mailing_sent_by, mail.sent_by_email)
     - else
       = t(:mailing_from, :models => t(type), :link => get_asset_link(mail.mailable))
     %tt

@@ -11,7 +11,7 @@ class MailingMailsController < ApplicationController
     
     @mailing_mail.mailable.email.blank? ? @recipient_number = 0 : @recipient_number = 1
     
-    @users = User.except(@current_user).all
+    @users = User.all
 
     if params[:previous] =~ /(\d+)\z/
       @previous = MailingMail.find($1)
@@ -28,6 +28,8 @@ class MailingMailsController < ApplicationController
     @mailing_mail = MailingMail.find(params[:id])
     @mailing = Mailing.find(@mailing_mail.mailing_id)
     @mailing_sim = Mailing.find(@mailing_mail.mailing_id)
+
+    @users = User.all
     
     # Update subject and body
     @mailing_sim.subject = params[:mailing_mail][:subject]
@@ -48,12 +50,15 @@ class MailingMailsController < ApplicationController
     if @mailing_mail.status == "ready"
       # Sending email
       begin
-        new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]), @recipients)
+        new_email = MailingNotifier.create_simple(@current_user, @mailing_mail, @mailing, params[:mailing_mail][:subject],  @template.auto_link(@template.simple_format params[:mailing_mail][:body]), @recipients, params[:sent_by_email])
+
         MailingNotifier.deliver(new_email)
 
         # Now saving with status sent, sent_at date and recipients
         params[:mailing_mail][:status] = "sent"
         params[:mailing_mail][:sent_at] = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+        params[:mailing_mail][:sent_by_email] = params[:sent_by_email]
+        params[:mailing_mail][:sent_by] = @current_user.id
         
         if @recipients.empty?
           params[:mailing_mail][:recipients] = @mailing_mail.mailable.email
@@ -64,8 +69,8 @@ class MailingMailsController < ApplicationController
         # Making a comment on asset
         Comment.create(:title => "mailing_id_#{@mailing.id}", :user => @current_user, :commentable => @mailing_mail.mailable, :comment => "#{t(:mail_to, params[:mailing_mail][:recipients])}\n#{t :subject}: #{params[:mailing_mail][:subject]}\n\n#{params[:mailing_mail][:body]}")    
         
-        respond_to do |format|
-          if @mailing_mail.update_attributes(params[:mailing_mail])            
+        respond_to do |format|          
+          if @mailing_mail.update_attributes(params[:mailing_mail])
             unless params[:next_mail].blank? || params[:next_mail] == "0"
               @mail = MailingMail.find(params[:next_mail].to_i)
               # Check and transform Transform data from source
@@ -86,15 +91,17 @@ class MailingMailsController < ApplicationController
         # Error sending email
         flash[:error] = t :error_sendig_mail
         #redirect_to(mailings_path)
-        render :update do |page| 
+        render :update do |page|
           page.redirect_to(@mailing)
         end
       end
     else
-      # Mail has placeholders, return to edit updated
-      @users = User.except(@current_user).all    
-      @mailing_mail.mailable.email.blank? ? @recipient_number = 0 : @recipient_number = 1
-      render :action => "edit"
+      # Mail has placeholders, return to edit updated          
+      #@mailing_mail.mailable.email.blank? ? @recipient_number = 0 : @recipient_number = 1
+      #render :action => "edit"
+      respond_to do |format|
+        format.js { render :template => "mailing_mails/placeholders_pending" }
+      end
     end
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml)
@@ -110,7 +117,7 @@ class MailingMailsController < ApplicationController
     respond_to_not_found(:js, :xml)
   end
   
-  # GET /mailing_mails/1/add_recipient                                       AJAX
+  # GET /mailing_mails/1/add_recipient                                     AJAX
   #----------------------------------------------------------------------------
   def add_recipient
     @mailing_mail = MailingMail.find(params[:id])
@@ -119,6 +126,31 @@ class MailingMailsController < ApplicationController
     
   rescue ActiveRecord::RecordNotFound
     respond_to_not_found(:js, :xml)    
+  end
+
+  # GET /mailing_mails/1/refresh_with_recipient                            AJAX
+  # Called from account contact selection, is allways an Account as source
+  #----------------------------------------------------------------------------
+  def refresh_with_recipient
+    unless params[:email].blank?
+      @mailing_mail = MailingMail.find(params[:id])
+      @mailing = Mailing.find(@mailing_mail.mailing_id)
+      @contact_source = Contact.find(:first, :include => :account, :conditions => { "account_contacts.account_id" => @mailing_mail.mailable.id, :email => params[:email] })
+
+      # Change the source to simulate the source as the contact selected
+      mailable = @mailing_mail.mailable
+      @mailing_mail.mailable = @contact_source
+      @new_source = Mailing.check_and_update_mail_placeholders(@mailing_mail, @mailing, true)
+
+      # Return the original mailable to the account
+      @mailing_mail.mailable = mailable
+      @mailing_mail.save!
+    else
+      render :nothing => true
+    end
+
+  rescue ActiveRecord::RecordNotFound
+    respond_to_not_found(:js, :xml)
   end
 
   # DELETE /mailing_mails/1

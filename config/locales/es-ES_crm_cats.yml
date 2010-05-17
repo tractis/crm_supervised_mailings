@@ -77,3 +77,7 @@ es-ES:
   mail_to: Email a {{value}}
   find_mails: Buscar emails
   mailing_attachment_intro: Permite adjuntar un fichero adjunto al mail
+  missing_placeholders: ¡Faltan placeholders por rellenar!
+  mailing_sent_by: " usando el email {{value}}"
+  to: A
+  mail_from: De

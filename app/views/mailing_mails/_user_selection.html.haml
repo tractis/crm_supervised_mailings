@@ -1,0 +1,1 @@
+= select_tag 'sent_by_email', options_for_select(@users.map { |u| [u.email, u.email] }, @current_user.email), { :style => "width:220px" }

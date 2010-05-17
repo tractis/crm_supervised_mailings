@@ -77,3 +77,7 @@ en-US:
   mail_to: Email to {{value}}
   find_mails: Find emails
   mailing_attachment_intro: You can attach a file to the mail
+  missing_placeholders: Missing placeholders to fill!
+  mailing_sent_by: " using the email {{value}}"
+  to: To
+  mail_from: From
