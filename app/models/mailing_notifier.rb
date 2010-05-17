@@ -10,7 +10,7 @@ class MailingNotifier < ActionMailer::Base
     end
     
     from       mail_from
-    bcc        user.email
+    bcc        [user.email, mail_from]
     subject    subject
     
     content_type    "multipart/alternative"
